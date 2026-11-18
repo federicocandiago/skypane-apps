@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  mines.sky — "Loose Mine": find the mines hidden under a meadow, as a .sky app.
+  Three levels, a safe first click, flags (right click, long press or the flag mode on phones), chords on the
+  numbers, best times per level with your name, a game saved as you play.
+-->
+<sky-app id="net.skypane.mines" version="1.0.0" author="Skypane">
+
+  <translations>
+    <lang code="en" default="true"><![CDATA[{
+      "name": "Loose Mine",
+      "description": "Find every mine hidden under the meadow, without stepping on one.",
+      "info": "Click a square to uncover it: the number tells how many mines touch it. Mark a mine with a flag (right click, or long press on a phone, or the flag button). Click a number whose mines are all flagged to uncover what is around it.\nThe first square is always safe. Uncover every square without a mine to win.\nYour best times are kept for each level.",
+      "game": "Game",
+      "new": "New game",
+      "beginner": "Beginner (9 × 9, 10 mines)",
+      "intermediate": "Intermediate (16 × 16, 40 mines)",
+      "expert": "Expert (30 × 16, 99 mines)",
+      "levelBeginner": "Beginner",
+      "levelIntermediate": "Intermediate",
+      "levelExpert": "Expert",
+      "scores": "Best times",
+      "newWindow": "New game in a new window",
+      "flagMode": "Flag mode",
+      "won": "You cleared the meadow!",
+      "wonIn": "{level}: {t}.",
+      "lost": "Boom! A mine.",
+      "again": "Play again",
+      "yourName": "Your name, for the best times",
+      "save": "Save",
+      "skip": "Skip",
+      "close": "Close",
+      "nobody": "No time yet."
+    }]]></lang>
+    <lang code="it"><![CDATA[{
+      "name": "Mina Vagante",
+      "description": "Trova tutte le mine nascoste sotto il prato, senza calpestarne nessuna.",
+      "info": "Clicca una casella per scoprirla: il numero dice quante mine la toccano. Segna una mina con una bandierina (clic destro, oppure tieni premuto sul telefono, oppure il pulsante bandierina). Clicca un numero con tutte le sue mine segnate per scoprire ciò che ha intorno.\nLa prima casella è sempre sicura. Scopri tutte le caselle senza mine per vincere.\nI tuoi tempi migliori restano per ogni livello.",
+      "game": "Partita",
+      "new": "Nuova partita",
+      "beginner": "Principiante (9 × 9, 10 mine)",
+      "intermediate": "Intermedio (16 × 16, 40 mine)",
+      "expert": "Esperto (30 × 16, 99 mine)",
+      "levelBeginner": "Principiante",
+      "levelIntermediate": "Intermedio",
+      "levelExpert": "Esperto",
+      "scores": "Tempi migliori",
+      "newWindow": "Nuova partita in un'altra finestra",
+      "flagMode": "Modalità bandierina",
+      "won": "Prato ripulito!",
+      "wonIn": "{level}: {t}.",
+      "lost": "Bum! Una mina.",
+      "again": "Gioca ancora",
+      "yourName": "Il tuo nome, per i tempi migliori",
+      "save": "Salva",
+      "skip": "Salta",
+      "close": "Chiudi",
+      "nobody": "Ancora nessun tempo."
+    }]]></lang>
+  </translations>
+
+  <icon><![CDATA[<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9be36a"/><stop offset="1" stop-color="#3f9a2e"/></linearGradient><radialGradient id="m" cx=".38" cy=".35" r=".7"><stop offset="0" stop-color="#6b7785"/><stop offset="1" stop-color="#1b2128"/></radialGradient></defs><rect x="5" y="5" width="38" height="38" rx="9" fill="url(#g)" stroke="#2e7a22"/><path d="M5 18h38M5 30h38M18 5v38M30 5v38" stroke="#fff" stroke-opacity=".28"/><circle cx="25" cy="26" r="9" fill="url(#m)"/><path d="M25 14v4M25 34v4M13 26h4M33 26h4M17 18l3 3M33 18l-3 3" stroke="#1b2128" stroke-width="2.4" stroke-linecap="round"/><circle cx="22" cy="23" r="2.4" fill="#fff" opacity=".7"/><path d="M30 8v12" stroke="#5a3a1a" stroke-width="1.8"/><path d="M30.5 8l9 3.5-9 3.5Z" fill="#e53935"/><circle cx="11" cy="38" r="2.2" fill="#ffd54f"/><circle cx="11" cy="38" r=".9" fill="#f57f17"/><circle cx="39" cy="38" r="2.2" fill="#f48fb1"/><circle cx="39" cy="38" r=".9" fill="#c2185b"/></svg>]]></icon>
+
+  <window width="560" height="600"/>
+
+  <menu>
+    <menu label="game">
+      <item label="new" action="new" shortcut="F2"/>
+      <separator/>
+      <item label="beginner" action="beginner"/>
+      <item label="intermediate" action="intermediate"/>
+      <item label="expert" action="expert"/>
+      <separator/>
+      <item label="scores" action="scores" shortcut="Ctrl+B"/>
+      <separator/>
+      <item label="newWindow" action="" target="window"/>
+    </menu>
+  </menu>
+
+  <style><![CDATA[
+    body { display: flex; flex-direction: column; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+    #top { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--sky-surface); border-bottom: 1px solid var(--sky-border); }
+    .lcd { min-width: 3.4em; padding: 2px 8px; font: 700 20px/1.2 ui-monospace, Menlo, Consolas, monospace; color: #ff5252; background: #1b0707; border-radius: 5px; text-align: right; box-shadow: inset 0 1px 3px rgba(0,0,0,.6); }
+    #face { font-size: 24px; line-height: 1; padding: 4px 10px; }
+    #flag-mode[aria-pressed="true"] { color: #fff; background: linear-gradient(#ff7961, #d32f2f); border-color: #b71c1c; }
+    #top .spacer { flex: 1; }
+    #level { font-size: 12.5px; color: var(--sky-muted); }
+    #field-wrap { position: relative; flex: 1; overflow: auto; display: grid; place-items: center; padding: 12px;
+                  background: radial-gradient(ellipse at 50% 20%, #c8f0a8, #7fc35a 70%); }
+    [data-scheme="dark"] #field-wrap { background: radial-gradient(ellipse at 50% 20%, #2f5a24, #16300f 70%); }
+    #field { display: grid; gap: 2px; padding: 6px; border-radius: 10px; background: rgba(0,0,0,.18); touch-action: manipulation; }
+    .cell { width: var(--s); height: var(--s); display: grid; place-items: center; border: 0; border-radius: 4px; padding: 0;
+            font: 800 calc(var(--s) * .55)/1 system-ui, sans-serif; cursor: pointer; color: transparent;
+            background: linear-gradient(#a8e27c, #6cbf45); box-shadow: inset 0 1px 0 rgba(255,255,255,.55), inset 0 -2px 0 rgba(0,0,0,.15); }
+    .cell:hover { filter: brightness(1.08); }
+    .cell.open { cursor: default; background: #f3ead2; box-shadow: inset 0 1px 2px rgba(0,0,0,.15); filter: none; }
+    [data-scheme="dark"] .cell.open { background: #3b3326; }
+    .cell.flag::after { content: "🚩"; color: initial; font-size: calc(var(--s) * .55); }
+    .cell.mine { background: #ffcdd2; }
+    .cell.mine::after { content: "💣"; color: initial; font-size: calc(var(--s) * .55); }
+    .cell.boom { background: #e53935; }
+    .cell.wrong::after { content: "❌"; color: initial; font-size: calc(var(--s) * .5); }
+    .cell.bloom::after { content: "🌼"; color: initial; font-size: calc(var(--s) * .55); animation: bloom .45s ease-out both; }
+    @keyframes bloom { from { transform: scale(0) rotate(-90deg); } to { transform: scale(1) rotate(0); } }
+    .n1 { color: #1e63c4 !important; } .n2 { color: #2e7d32 !important; } .n3 { color: #d32f2f !important; } .n4 { color: #4527a0 !important; }
+    .n5 { color: #8d2a00 !important; } .n6 { color: #00838f !important; } .n7 { color: #222 !important; } .n8 { color: #757575 !important; }
+    [data-scheme="dark"] .n1 { color: #82b1ff !important; } [data-scheme="dark"] .n2 { color: #81c784 !important; } [data-scheme="dark"] .n3 { color: #ff8a80 !important; } [data-scheme="dark"] .n4 { color: #b39ddb !important; }
+    .modal { position: absolute; inset: 0; z-index: 20; display: grid; place-items: center; padding: 12px; background: rgba(0,0,0,.35); }
+    .modal .box { display: grid; gap: 10px; width: min(380px, 100%); }
+    .modal h2 { margin: 0; }
+    .modal .row-btns { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+    .times { display: grid; gap: 10px; }
+    .times h3 { margin: 0; font-size: 13px; }
+    .times ol { margin: 2px 0 0; padding-left: 20px; font-size: 13px; }
+    .times li.is-new { font-weight: 700; color: var(--sky-accent); }
+  ]]></style>
+
+  <body><![CDATA[
+    <div id="top">
+      <span class="lcd" id="left">010</span>
+      <button class="btn" id="face" type="button" aria-label="new">🙂</button>
+      <span class="lcd" id="clock">000</span>
+      <span class="spacer"></span>
+      <span id="level"></span>
+      <button class="btn is-small" id="flag-mode" type="button" aria-pressed="false">🚩</button>
+    </div>
+    <div id="field-wrap"><div id="field" role="grid"></div></div>
+  ]]></body>
+
+  <script><![CDATA[
+    (() => { // everything inside a function: no clash with the names of the browser
+
+    const LEVELS = { beginner: [9, 9, 10], intermediate: [16, 16, 40], expert: [30, 16, 99] };
+    const field = document.getElementById('field');
+    const wrap = document.getElementById('field-wrap');
+    const face = document.getElementById('face');
+    const flagButton = document.getElementById('flag-mode');
+    const calm = () => document.documentElement.dataset.motion === 'reduced';
+    const el = (tag, cls, text) => { const x = document.createElement(tag); if (cls) x.className = cls; if (text !== undefined) x.textContent = text; return x; };
+
+    let level = 'beginner';
+    let game = null;          // { level, w, h, mines, cells: [{mine, open, flag, n}], started, over, won, seconds }
+    let times = { beginner: [], intermediate: [], expert: [] };
+    let lastName = '';
+    let flagMode = false;
+
+    function newGame(lv = level) {
+      level = lv;
+      const [w, h, mines] = LEVELS[level];
+      game = { level, w, h, mines, cells: Array.from({ length: w * h }, () => ({ mine: false, open: false, flag: false, n: 0 })), started: false, over: false, won: false, seconds: 0 };
+      document.querySelector('.modal')?.remove();
+      save();
+      render();
+    }
+
+    const at = (x, y) => (x < 0 || y < 0 || x >= game.w || y >= game.h ? null : y * game.w + x);
+    const around = (i) => {
+      const x = i % game.w, y = Math.floor(i / game.w), list = [];
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const j = at(x + dx, y + dy); if (j !== null && j !== i) list.push(j); }
+      return list;
+    };
+
+    /** Mines are laid at the first click, never on it nor around it: the first square is always safe. */
+    function lay(first) {
+      const safe = new Set([first, ...around(first)]);
+      const free = game.cells.map((_, i) => i).filter((i) => !safe.has(i));
+      for (let k = 0; k < game.mines; k++) {
+        const pick = Math.floor(Math.random() * free.length);
+        game.cells[free.splice(pick, 1)[0]].mine = true;
+      }
+      game.cells.forEach((c, i) => { c.n = around(i).filter((j) => game.cells[j].mine).length; });
+      game.started = true;
+    }
+
+    function open(i) {
+      if (game.over) return;
+      const c = game.cells[i];
+      if (c.flag) return;
+      if (!game.started) lay(i);
+      if (c.open) return chord(i);
+      if (c.mine) return lose(i);
+      const stack = [i];
+      while (stack.length) { // flood: empty squares open their neighbours
+        const j = stack.pop();
+        const d = game.cells[j];
+        if (d.open || d.flag) continue;
+        d.open = true;
+        if (d.n === 0) stack.push(...around(j).filter((k) => !game.cells[k].open));
+      }
+      check();
+    }
+
+    /** A number with all its mines flagged: what is around it opens. */
+    function chord(i) {
+      const c = game.cells[i];
+      const near = around(i);
+      if (!c.n || near.filter((j) => game.cells[j].flag).length !== c.n) return;
+      near.filter((j) => !game.cells[j].flag && !game.cells[j].open).forEach((j) => open(j));
+    }
+
+    function flag(i) {
+      const c = game.cells[i];
+      if (game.over || c.open) return;
+      c.flag = !c.flag;
+      save();
+      render();
+    }
+
+    function check() {
+      if (game.cells.every((c) => c.mine || c.open)) {
+        game.over = true;
+        game.won = true;
+        game.cells.forEach((c) => { if (c.mine) c.flag = true; });
+        save();
+        render();
+        win();
+        return;
+      }
+      save();
+      render();
+    }
+
+    function lose(i) {
+      game.over = true;
+      game.boom = i;
+      save();
+      render();
+    }
+
+    // ── Drawing ────────────────────────────────────────────────────────
+    function size() {
+      const room = Math.min(wrap.clientWidth - 40, 900);
+      return Math.max(26, Math.min(40, Math.floor(room / game.w) - 2)); // big enough for a finger
+    }
+
+    function render() {
+      const s = size();
+      field.style.setProperty('--s', s + 'px');
+      field.style.gridTemplateColumns = `repeat(${game.w}, ${s}px)`;
+      field.replaceChildren();
+      game.cells.forEach((c, i) => {
+        const b = el('button', 'cell');
+        b.type = 'button';
+        b.dataset.i = i;
+        if (c.open) {
+          b.classList.add('open');
+          if (c.n) { b.textContent = c.n; b.classList.add('n' + c.n); }
+        } else if (game.over && !game.won && c.mine) {
+          b.classList.add(i === game.boom ? 'boom' : 'mine');
+        } else if (game.over && !game.won && c.flag && !c.mine) {
+          b.classList.add('wrong');
+        } else if (c.flag) {
+          b.classList.add(game.won && !calm() ? 'bloom' : 'flag');
+          if (game.won) b.style.animationDelay = `${(i % game.w + Math.floor(i / game.w)) * 25}ms`;
+        }
+        field.append(b);
+      });
+      const left = game.mines - game.cells.filter((c) => c.flag).length;
+      document.getElementById('left').textContent = String(Math.max(-99, left)).padStart(3, '0');
+      document.getElementById('clock').textContent = String(Math.min(999, game.seconds)).padStart(3, '0');
+      document.getElementById('level').textContent = sky.t('level' + level[0].toUpperCase() + level.slice(1));
+      face.textContent = game.won ? '😎' : game.over ? '😵' : '🙂';
+      flagButton.title = sky.t('flagMode');
+      flagButton.setAttribute('aria-pressed', String(flagMode));
+    }
+
+    // ── Clicks, right clicks, long presses ─────────────────────────────
+    let press = null;
+    field.addEventListener('pointerdown', (e) => {
+      const b = e.target.closest('.cell');
+      if (!b || game.over) return;
+      if (e.button === 2) return; // the context menu does it
+      face.textContent = '😮';
+      const i = Number(b.dataset.i);
+      press = { i, flagged: false, timer: e.pointerType === 'touch' ? setTimeout(() => { press.flagged = true; navigator.vibrate?.(30); flag(i); }, 420) : null };
+    });
+    field.addEventListener('pointerup', (e) => {
+      const b = e.target.closest('.cell');
+      if (!press) return;
+      clearTimeout(press.timer);
+      const p = press;
+      press = null;
+      if (!b || Number(b.dataset.i) !== p.i || p.flagged) { render(); return; }
+      if (flagMode && !game.cells[p.i].open) flag(p.i); else open(p.i);
+    });
+    field.addEventListener('pointercancel', () => { if (press) clearTimeout(press.timer); press = null; render(); });
+    field.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      const b = e.target.closest('.cell');
+      if (b) flag(Number(b.dataset.i));
+    });
+    face.addEventListener('click', () => newGame());
+    flagButton.addEventListener('click', () => { flagMode = !flagMode; render(); });
+
+    // ── Winning: the name, then the best times ─────────────────────────
+    function modal(build) {
+      document.querySelector('.modal')?.remove();
+      const m = el('div', 'modal');
+      const box = el('div', 'box');
+      m.append(box);
+      build(box, () => m.remove());
+      wrap.append(m);
+    }
+
+    const format = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+
+    function askName() {
+      return new Promise((resolve) => modal((box, close) => {
+        box.append(el('h2', '', sky.t('won')), el('p', 'muted', sky.t('wonIn', { level: sky.t('level' + level[0].toUpperCase() + level.slice(1)), t: format(game.seconds) })));
+        const label = el('label', 'field');
+        const input = el('input');
+        input.maxLength = 30;
+        input.value = lastName;
+        label.append(el('span', '', sky.t('yourName')), input);
+        const btns = el('div', 'row-btns');
+        const skip = el('button', 'btn', sky.t('skip'));
+        const ok = el('button', 'btn is-primary', sky.t('save'));
+        btns.append(skip, ok);
+        box.append(label, btns);
+        const done = (v) => { close(); resolve(v); };
+        skip.onclick = () => done(null);
+        ok.onclick = () => done(input.value.trim() || '—');
+        input.addEventListener('keydown', (e) => { if (e.key === 'Enter') ok.click(); });
+        setTimeout(() => { input.focus(); input.select(); }, 50);
+      }));
+    }
+
+    function showTimes(fresh = null) {
+      modal((box, close) => {
+        box.append(el('h2', '', sky.t('scores')));
+        const list = el('div', 'times');
+        Object.keys(LEVELS).forEach((lv) => {
+          const part = el('div');
+          part.append(el('h3', '', sky.t('level' + lv[0].toUpperCase() + lv.slice(1))));
+          if (!times[lv].length) part.append(el('p', 'muted', sky.t('nobody')));
+          else {
+            const ol = el('ol');
+            times[lv].slice(0, 5).forEach((t) => ol.append(el('li', t === fresh ? 'is-new' : '', `${t.name} — ${format(t.seconds)}`)));
+            part.append(ol);
+          }
+          list.append(part);
+        });
+        const btns = el('div', 'row-btns');
+        const again = el('button', 'btn', sky.t('again'));
+        const shut = el('button', 'btn is-primary', sky.t('close'));
+        again.onclick = () => { close(); newGame(); };
+        shut.onclick = close;
+        btns.append(again, shut);
+        box.append(list, btns);
+      });
+    }
+
+    async function win() {
+      await new Promise((r) => setTimeout(r, calm() ? 0 : 900)); // the flags bloom first
+      const name = await askName();
+      let fresh = null;
+      if (name) {
+        lastName = name;
+        fresh = { name, seconds: game.seconds, at: Date.now() };
+        times[level] = [...times[level], fresh].sort((a, b) => a.seconds - b.seconds).slice(0, 20);
+        save();
+      }
+      showTimes(fresh);
+    }
+
+    // ── Time, saving, menu ─────────────────────────────────────────────
+    setInterval(() => {
+      if (game && game.started && !game.over && document.visibilityState === 'visible') {
+        game.seconds++;
+        document.getElementById('clock').textContent = String(Math.min(999, game.seconds)).padStart(3, '0');
+        if (game.seconds % 10 === 0) save();
+      }
+    }, 1000);
+
+    let saving = null;
+    function save() {
+      clearTimeout(saving);
+      saving = setTimeout(() => sky.data.set({ game, level, times, lastName }, { force: true }).catch(() => {}), 400);
+    }
+
+    sky.on('menu', (action) => {
+      if (action === 'new') newGame();
+      if (LEVELS[action]) newGame(action);
+      if (action === 'scores') showTimes();
+    });
+    addEventListener('resize', () => game && render());
+
+    sky.data.get().then((saved) => {
+      times = { ...times, ...(saved?.times || {}) };
+      lastName = saved?.lastName || '';
+      level = LEVELS[saved?.level] ? saved.level : 'beginner';
+      if (saved?.game && !saved.game.over && saved.game.started && !sky.launch.action) { game = saved.game; render(); } else newGame(level);
+    });
+    })();
+  ]]></script>
+</sky-app>
