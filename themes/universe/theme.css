@@ -202,6 +202,8 @@ strong, b, th { font-weight: 700; }
 /* ── The desktop: every icon a channel, a white tile with a thick grey rim that lights up blue ───── */
 .desktop-icons { gap: 10px; }
 .desktop-icon { height: 100px; grid-template-rows: 48px auto; align-content: start; padding: 9px 4px 7px; color: var(--icon-label); background: var(--tile-bg); border: 2px solid var(--tile-border); border-radius: 16px; text-shadow: none; box-shadow: 0 2px 5px rgba(60, 70, 80, .1); }
+/* phones: the tile as tall as its name needs (two lines are common), the tiles of a row alike */
+@media (max-width: 720px) { .desktop-icon { height: auto; min-height: 100px; padding-bottom: 9px; } }
 .desktop-icon:hover { background: var(--tile-bg); border-color: #5fd2f7; box-shadow: 0 0 0 3px rgba(52, 190, 237, .25), 0 0 16px rgba(52, 190, 237, .5); }
 .desktop-icon:focus-visible, .desktop-icon.is-selected { background: var(--tile-bg); border-color: #34beed; box-shadow: 0 0 0 3px rgba(52, 190, 237, .35), 0 0 18px rgba(52, 190, 237, .55); }
 .desktop-icon img { filter: drop-shadow(0 2px 3px rgba(60, 70, 80, .25)); }
@@ -294,3 +296,6 @@ body.layout-mac .dock { border: 2px solid var(--tile-border); border-radius: 22p
         linear-gradient(transparent 78%, rgba(52, 190, 237, .5) 78%, rgba(52, 190, 237, .5) 80%, transparent 80%),
         repeating-linear-gradient(0deg, #1c2025 0 26px, #181b1f 26px 52px);
 }
+
+/* Delete: a soft red pill, never a shout. */
+.btn.is-danger { color: #fff; background: linear-gradient(#ff8a8a, #e5484d); border-color: #d23b40; text-shadow: 0 -1px 0 rgba(120, 0, 10, .3); }
