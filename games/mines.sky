@@ -4,14 +4,14 @@
   Three levels, a safe first click, flags (right click, long press or the flag mode on phones), chords on the
   numbers, best times per level with your name, a game saved as you play.
 -->
-<sky-app id="net.skypane.mines" version="1.0.0" author="Skypane">
+<sky-app id="net.skypane.mines" version="1.1.0" author="Skypane">
 
   <translations>
     <lang code="en" default="true"><![CDATA[{
       "name": "Loose Mine",
       "description": "Find every mine hidden under the meadow, without stepping on one.",
       "info": "Click a square to uncover it: the number tells how many mines touch it. Mark a mine with a flag (right click, or long press on a phone, or the flag button). Click a number whose mines are all flagged to uncover what is around it.\nThe first square is always safe. Uncover every square without a mine to win.\nYour best times are kept for each level.",
-      "game": "Game",
+      "game": "Game", "level": "Level",
       "new": "New game",
       "beginner": "Beginner (9 × 9, 10 mines)",
       "intermediate": "Intermediate (16 × 16, 40 mines)",
@@ -36,7 +36,7 @@
       "name": "Mina Vagante",
       "description": "Trova tutte le mine nascoste sotto il prato, senza calpestarne nessuna.",
       "info": "Clicca una casella per scoprirla: il numero dice quante mine la toccano. Segna una mina con una bandierina (clic destro, oppure tieni premuto sul telefono, oppure il pulsante bandierina). Clicca un numero con tutte le sue mine segnate per scoprire ciò che ha intorno.\nLa prima casella è sempre sicura. Scopri tutte le caselle senza mine per vincere.\nI tuoi tempi migliori restano per ogni livello.",
-      "game": "Partita",
+      "game": "Partita", "level": "Livello",
       "new": "Nuova partita",
       "beginner": "Principiante (9 × 9, 10 mine)",
       "intermediate": "Intermedio (16 × 16, 40 mine)",
@@ -63,17 +63,17 @@
 
   <window width="560" height="600"/>
 
+  <!-- ☰ in Skypane's bar: the first menu is its first level, «Level ›» a second level with ✓ on the one in play -->
   <menu>
     <menu label="game">
-      <item label="new" action="new" shortcut="F2"/>
-      <separator/>
+      <item label="new" action="new" shortcut="F2" icon="play"/>
+      <item label="scores" action="scores" shortcut="Ctrl+B" icon="flag"/>
+      <item label="newWindow" action="" target="window" icon="new-window"/>
+    </menu>
+    <menu label="level" icon="grid">
       <item label="beginner" action="beginner"/>
       <item label="intermediate" action="intermediate"/>
       <item label="expert" action="expert"/>
-      <separator/>
-      <item label="scores" action="scores" shortcut="Ctrl+B"/>
-      <separator/>
-      <item label="newWindow" action="" target="window"/>
     </menu>
   </menu>
 
@@ -146,6 +146,7 @@
 
     function newGame(lv = level) {
       level = lv;
+      Object.keys(LEVELS).forEach((name) => sky.ui.state(name, { checked: name === level })); // ✓ in ☰ › Level
       const [w, h, mines] = LEVELS[level];
       game = { level, w, h, mines, cells: Array.from({ length: w * h }, () => ({ mine: false, open: false, flag: false, n: 0 })), started: false, over: false, won: false, seconds: 0 };
       document.querySelector('.modal')?.remove();

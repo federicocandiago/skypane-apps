@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- solitaire.sky — Klondike patience, as a .sky app. Cards are drawn with CSS; the game is saved as you play. -->
-<sky-app id="net.skypane.solitaire" version="1.1.0" author="Skypane">
+<sky-app id="net.skypane.solitaire" version="1.2.0" author="Skypane">
 
   <translations>
     <lang code="en" default="true"><![CDATA[{
       "name": "Solitaire",
       "description": "Klondike patience: build the four foundations from Ace to King.",
       "info": "Move cards between the seven columns in descending order, alternating red and black. Only a King goes into an empty column. Build each foundation by suit, from Ace to King.\nClick the deck to draw. Double click (on a phone: tap) a card to send it where it fits. When every card is face up, the game finishes by itself. Ctrl+Z undoes, F2 starts a new game.\nYour game and your best scores are saved as you play.",
-      "game": "Game",
+      "game": "Game", "cards": "Cards",
       "new": "New game",
       "undo": "Undo",
       "draw1": "Draw one card",
@@ -34,7 +34,7 @@
       "name": "Solitario",
       "description": "Il solitario Klondike: completa le quattro pile dall'Asso al Re.",
       "info": "Sposta le carte tra le sette colonne in ordine decrescente, alternando rosso e nero. In una colonna vuota può andare solo un Re. Completa ogni pila per seme, dall'Asso al Re.\nClicca il mazzo per pescare. Doppio clic (sul telefono: un tocco) su una carta per mandarla dove va. Quando tutte le carte sono scoperte, la partita si completa da sola. Ctrl+Z annulla, F2 inizia una nuova partita.\nPartita e migliori punteggi vengono salvati mentre giochi.",
-      "game": "Partita",
+      "game": "Partita", "cards": "Carte",
       "new": "Nuova partita",
       "undo": "Annulla",
       "draw1": "Pesca una carta",
@@ -63,19 +63,24 @@
 
   <window width="760" height="560"/>
 
+  <!-- ☰ in Skypane's bar: the first menu is its first level, «Cards ›» a second level with ✓ on the way of drawing -->
   <menu>
     <menu label="game">
-      <item label="new" action="new" shortcut="F2"/>
-      <item label="undo" action="undo" shortcut="Ctrl+Z"/>
-      <separator/>
+      <item label="new" action="new" shortcut="F2" icon="play"/>
+      <item label="undo" action="undo" shortcut="Ctrl+Z" icon="undo"/>
+      <item label="scores" action="scores" shortcut="Ctrl+B" icon="flag"/>
+      <item label="newWindow" action="new" target="window" icon="new-window"/>
+    </menu>
+    <menu label="cards" icon="grid">
       <item label="draw1" action="draw1"/>
       <item label="draw3" action="draw3"/>
-      <separator/>
-      <item label="scores" action="scores" shortcut="Ctrl+B"/>
-      <separator/>
-      <item label="newWindow" action="new" target="window"/>
     </menu>
   </menu>
+
+  <!-- the bar: «Undo», a word on a computer, the arrow on a phone -->
+  <bar>
+    <item label="undo" action="undo" icon="undo"/>
+  </bar>
 
   <style><![CDATA[
     body { display: flex; flex-direction: column; user-select: none; -webkit-user-select: none; }
@@ -283,6 +288,10 @@
     }
 
     function render() {
+      // the bar and ☰ (Skypane's): what can be undone, how cards are drawn
+      sky.ui.state('undo', { disabled: !undoStack.length || finishing });
+      sky.ui.state('draw1', { checked: !game.drawThree });
+      sky.ui.state('draw3', { checked: !!game.drawThree });
       measure();
       table.innerHTML = '';
       const { x, top: y0, row } = layout;

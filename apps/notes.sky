@@ -5,7 +5,7 @@
   opens a new window), style, body, script (data, texts, toasts, menu actions), an asset and a migration.
   Read SKYPANE-APPS.md for the whole story.
 -->
-<sky-app id="net.skypane.hello" version="1.1.0" author="Skypane">
+<sky-app id="net.skypane.hello" version="1.2.0" author="Skypane">
 
   <translations>
     <lang code="en" default="true"><![CDATA[{
@@ -44,10 +44,10 @@
 
   <menu>
     <menu label="file">
-      <item label="new" action="focus" shortcut="Ctrl+N"/>
-      <item label="newWindow" action="" target="window"/>
+      <item label="new" action="focus" shortcut="Ctrl+N" icon="new"/>
+      <item label="newWindow" action="" target="window" icon="new-window"/>
       <separator/>
-      <item label="clear" action="clear"/>
+      <item label="clear" action="clear" icon="trash"/>
     </menu>
   </menu>
 

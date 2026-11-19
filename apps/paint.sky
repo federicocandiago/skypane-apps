@@ -6,7 +6,7 @@
   <opens> offers the app in «Open with…» of Files, and sky.launch.file is the picture it was opened with.
   The tool, colour and size are remembered with sky.data.
 -->
-<sky-app id="net.skypane.paint" version="1.0.0" author="Skypane">
+<sky-app id="net.skypane.paint" version="1.1.0" author="Skypane">
 
   <translations>
     <lang code="en" default="true"><![CDATA[{
@@ -47,23 +47,30 @@
 
   <opens types=".png .jpg .jpeg .webp .gif .bmp image/png image/jpeg image/webp image/gif image/bmp"/>
 
+  <!-- ☰ in Skypane's bar: the first menu is its first level, the others its second levels (Edit ›) -->
   <menu>
     <menu label="file">
-      <item label="new" action="new"/>
-      <item label="open" action="open" shortcut="Ctrl+O"/>
+      <item label="new" action="new" icon="new"/>
+      <item label="open" action="open" shortcut="Ctrl+O" icon="open"/>
+      <item label="save" action="save" shortcut="Ctrl+S" icon="save"/>
+      <item label="saveAs" action="saveAs" shortcut="Ctrl+Shift+S" icon="save-as"/>
       <separator/>
-      <item label="save" action="save" shortcut="Ctrl+S"/>
-      <item label="saveAs" action="saveAs" shortcut="Ctrl+Shift+S"/>
-      <separator/>
-      <item label="newWindow" action="" target="window"/>
+      <item label="newWindow" action="" target="window" icon="new-window"/>
     </menu>
-    <menu label="edit">
+    <menu label="edit" icon="edit">
       <item label="undo" action="undo" shortcut="Ctrl+Z"/>
       <item label="redo" action="redo" shortcut="Ctrl+Y"/>
       <separator/>
       <item label="clear" action="clear"/>
     </menu>
   </menu>
+
+  <!-- the buttons of the bar: words on a computer, the icon on a phone; «Save» shows only with changes -->
+  <bar>
+    <item label="undo" action="undo" icon="undo"/>
+    <item label="redo" action="redo" icon="redo"/>
+    <item label="save" action="save" icon="save" primary="true"/>
+  </bar>
 
   <style><![CDATA[
     body { display: flex; flex-direction: column; overflow: hidden; user-select: none; -webkit-user-select: none; }
@@ -90,7 +97,6 @@
       background: repeating-conic-gradient(var(--sky-sunken) 0 25%, var(--sky-bg) 0 50%) 0 0 / 20px 20px; }
     canvas { max-width: 100%; max-height: 100%; background: transparent; box-shadow: 0 2px 12px rgba(0, 0, 0, .25); touch-action: none; cursor: crosshair; }
     .status { display: flex; gap: 12px; padding: 3px 10px; font-size: 12px; color: var(--sky-muted); background: var(--sky-surface); border-top: 1px solid var(--sky-border); white-space: nowrap; overflow: hidden; }
-    .status .name { flex: 1; overflow: hidden; text-overflow: ellipsis; }
     /* phones: one row of tools that scrolls sideways, the picture keeps the rest of the screen */
     @media (max-width: 560px) { .tools { flex-wrap: nowrap; overflow-x: auto; } .size input { width: 70px; } .stage { padding: 6px; } }
   ]]></style>
@@ -98,7 +104,7 @@
   <body><![CDATA[
     <div class="tools" id="tools" role="toolbar"></div>
     <div class="stage" id="stage"><canvas id="canvas"></canvas></div>
-    <div class="status"><span class="name" id="name"></span><span id="dims"></span></div>
+    <div class="status"><span id="dims"></span></div>
   ]]></body>
 
   <script><![CDATA[(() => {
@@ -118,8 +124,6 @@
       fill: '<path d="M5 11l7-7 7 7-7 7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M5 11h14l-7 7z" fill="currentColor" opacity=".5"/><path d="M20 15c1 2 2 3 2 4a2 2 0 0 1-4 0c0-1 1-2 2-4z" fill="currentColor"/>',
       picker: '<path d="M14 4l6 6-2 2-6-6zM12 8l-7 7v4h4l7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
       filled: '<rect x="4" y="6" width="16" height="12" rx="1" fill="currentColor" opacity=".55" stroke="currentColor" stroke-width="2"/>',
-      undo: '<path d="M9 14L4 9l5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 9h10a6 6 0 0 1 0 12h-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
-      redo: '<path d="M15 14l5-5-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 9H10a6 6 0 0 0 0 12h3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
     };
 
     // what the app remembers (sky.data): the tool, the colour, the size, the shapes filled or not
@@ -181,9 +185,10 @@
     sizeInput.addEventListener('input', () => { prefs.size = Number(sizeInput.value); show(); });
     sizeInput.addEventListener('change', remember);
     tools.append(size);
-    sep();
-    const undoButton = button('undo', t('undo'), () => step(undo, redo));
-    const redoButton = button('redo', t('redo'), () => step(redo, undo));
+
+    // the bar and ☰ belong to Skypane: the app tells them its title, unsaved changes and what can't be done now
+    const told = {};
+    const tell = (key, value, send) => { if (told[key] !== value) { told[key] = value; send(); } };
 
     function show() {
       Object.entries(toolButtons).forEach(([name, b]) => b.setAttribute('aria-pressed', String(prefs.tool === name)));
@@ -192,14 +197,12 @@
       customInput.value = prefs.colour;
       sizeInput.value = prefs.size;
       size.querySelector('output').textContent = prefs.size;
-      undoButton.disabled = !undo.length;
-      redoButton.disabled = !redo.length;
-      undoButton.style.opacity = undo.length ? 1 : 0.4;
-      redoButton.style.opacity = redo.length ? 1 : 0.4;
       const name = file ? file.name : t('untitled');
-      document.getElementById('name').textContent = (dirty ? '• ' : '') + name;
       document.getElementById('dims').textContent = `${canvas.width} × ${canvas.height}`;
-      sky.ui.title((dirty ? '• ' : '') + name);
+      tell('title', name, () => sky.ui.title(name));
+      tell('dirty', dirty, () => { sky.ui.dirty(dirty); sky.ui.state('save', { hidden: !dirty }); });
+      tell('undo', !undo.length, () => sky.ui.state('undo', { disabled: !undo.length }));
+      tell('redo', !redo.length, () => sky.ui.state('redo', { disabled: !redo.length }));
     }
 
     // ── the picture ────────────────────────────────────────────────────

@@ -64,8 +64,8 @@ apps are welcome — one `.sky` file per app, in `games/` or `apps/`, with Engli
 
 **Skypane** is a desktop that runs in the browser. A Skypane app is **one XML file** with the extension `.sky`:
 its texts, icon, menu, style, HTML and JavaScript all live in that file. The user uploads it in
-*Applications › Add an app*; from then on it has its own icon, window and (optionally) menu bar, like every other
-app of the desktop.
+*Applications › Add an app*; from then on it has its own icon and window, and the same bar as every other app of
+the desktop: ☰ with its menu, its title, its buttons, ⚙.
 
 This guide is complete: an app written by following it, part by part, works the first time. It describes the
 format, what an app can do, the `sky` object it talks to the desktop with, the rules for phones, a complete
@@ -80,7 +80,7 @@ The app runs in a sandboxed window: a page with no cookies, no network and no ac
   - keep **one JSON document** per user, saved encrypted on the server (`sky.data`);
   - **open, read and save the user's files — only those the user chooses for it** in Skypane's own Open and
     Save as windows, or opens with it from Files (`sky.files`, see *Files* below);
-  - show toasts and confirmations, set its window title, open another window of itself, react to its menu;
+  - show toasts and confirmations, set its title, fill ☰ and the bar of its window, open another window of itself;
   - use its own pictures, sounds and fonts (assets) and texts (translations);
   - follow the desktop's theme, light and dark.
 - **It cannot**
@@ -105,12 +105,18 @@ The app runs in a sandboxed window: a page with no cookies, no network and no ac
   <opens types=".png .jpg image/png image/jpeg"/>
   <menu>
     <menu label="file">
-      <item label="new" action="new"/>
-      <item label="open" action="open" shortcut="Ctrl+O"/>
+      <item label="new" action="new" icon="new"/>
+      <item label="open" action="open" shortcut="Ctrl+O" icon="open"/>
       <separator/>
-      <item label="newWindow" action="" target="window"/>
+      <item label="newWindow" action="" target="window" icon="new-window"/>
+    </menu>
+    <menu label="edit" icon="edit">
+      <item label="clear" action="clear"/>
     </menu>
   </menu>
+  <bar>
+    <item label="save" action="save" icon="save" primary="true"/>
+  </bar>
   <style><![CDATA[ /* CSS */ ]]></style>
   <body><![CDATA[ <!-- HTML that goes inside <body> --> ]]></body>
   <script><![CDATA[ // JavaScript, run after the body ]]></script>
@@ -131,7 +137,8 @@ The parts, in any order inside `<sky-app>`:
 | `<icon>` | yes | One inline **SVG**, square `viewBox` (48×48 works well), up to 64 KB. Colourful, glossy, simple; readable at 24 px. |
 | `<window>` | no | Starting size in pixels: width 240–1600, height 160–1200 (default 640×480). |
 | `<opens>` | no | The files the app can open from Files, in `types`, separated by spaces: extensions (`.png`) and types (`image/png`, `image/*`). The app is then offered in **Files › Open with…** for those files (a double click keeps opening them with the desktop's own app). See *Files*. |
-| `<menu>` | no | One level of menus: `<menu label="…">` holding `<item>` and `<separator/>`. `label` attributes are **translation keys**. An `<item>` has an `action` (a word your script receives), an optional `shortcut` (`F2`, `Ctrl+Z`, `Ctrl+Shift+S`…), and `target="window"` to run the action in a **new window** of the app (which receives it as `sky.launch.action`). With a menu, the desktop adds "? › About" with `name`, `description` and `info`. Up to 8 menus of 30 items. |
+| `<menu>` | no | What ☰ shows (see *The bar*): `<menu label="…">` holding `<item>` and `<separator/>`. The items of the **first** menu are the first level of ☰; each **other** menu is one entry of the first level (with its `icon`) that opens its items. `label` attributes are **translation keys**. An `<item>` has an `action` (a word your script receives), an optional `shortcut` (`F2`, `Ctrl+Z`, `Ctrl+Shift+S`…), an optional `icon` (shown on the first level only), and `target="window"` to run the action in a **new window** of the app (which receives it as `sky.launch.action`). Up to 8 menus of 30 items. |
+| `<bar>` | no | Buttons of the window's bar, right of the title: up to 6 `<item>` like those of a menu, plus `primary="true"` for the main one (at most one: Save, Send…). Each has an `icon`: the bar shows the words on a computer and the icon on a phone. |
 | `<style>` | no | CSS for the app. |
 | `<body>` | one of the two | HTML placed in `<body>`. |
 | `<script>` | one of the two | JavaScript placed at the end of `<body>`. A classic script, not a module. |
@@ -163,10 +170,12 @@ const text = await sky.files.read(file, 'text')                  // …or "text"
 const same = await sky.files.write(file, blob)                   // saves over it (a Blob, a string or an ArrayBuffer)
 const made = await sky.files.saveAs(blob, { name: 'Drawing.png', types: ['image/*'] }) // Save as: a new file, or null
 
-sky.on('menu', (action) => { … })          // a menu item or its shortcut was used
+sky.on('menu', (action) => { … })          // an item of ☰, a button of the bar or a shortcut was used
 sky.on('theme', (scheme) => { … })         // the user switched light/dark: "light" | "dark"
 
-await sky.ui.title('Report.txt')           // the window title (document.title is not shown anywhere)
+await sky.ui.title('Report.txt')           // the title, in the bar and on the window (document.title is not shown)
+await sky.ui.dirty(true)                   // unsaved changes: a dot by the title, closing asks first; false when saved
+await sky.ui.state('undo', { disabled: true })  // an item of ☰ and of the bar: disabled, checked (✓), hidden
 await sky.ui.toast('Saved')                // a short message at the bottom
 const yes = await sky.ui.confirm('Delete everything?')   // true or false
 await sky.ui.open('new')                   // a new window of this app, with sky.launch.action = "new"
@@ -176,6 +185,36 @@ await sky.ui.close()                       // closes this window
 `sky.data.set()` without `force` is refused (`code === "conflict"`) when another window of the same app saved
 after this one read the data: read again with `sky.data.get()`, merge, save. For simple apps
 `{ force: true }` (the last save wins) is fine.
+
+## The bar
+
+Every window has the same bar, drawn by Skypane, not by the app:
+
+```
+[☰]  Title ………………………  [buttons of <bar>]  [⚙]
+```
+
+- **☰**, always first, opens the app's menu: the items of the first `<menu>`, then the other menus as entries
+  that open their own items (*Edit ›*), then *About* (with `name`, `description`, `info`). On a phone, buttons of
+  the bar that have no room go into ☰ too.
+- **The title** is the app's name until `sky.ui.title()` changes it (the name of the open file, for instance);
+  `sky.ui.dirty(true)` puts a dot by it.
+- **The buttons** of `<bar>`: words on a computer, only the icon on a phone. Without an `icon` a button can't
+  shrink, so it is the first to go into ☰.
+- **⚙** opens the app's page in Applications: its details, where it shows, what it may do.
+
+Do not draw another menu bar inside the app. A row of the app's own tools (brushes, colours…) under the bar is
+fine: it is part of the content.
+
+Keep the state honest: `sky.ui.state('redo', { disabled: true })` when there is nothing to redo,
+`{ checked: true }` on the choice in use (a level, a view), `{ hidden: true }` for what makes no sense now (Save
+with nothing to save). It applies to the item of ☰ and to the button of the bar with that `action`.
+
+**Icons** (for `icon="…"`): `new`, `open`, `save`, `save-as`, `print`, `download`, `upload`, `new-window`,
+`folder-plus`, `plus`, `edit`, `trash`, `archive`, `undo`, `redo`, `eraser`, `refresh`, `search`, `share`, `people`,
+`star`, `flag`, `play`, `check`, `close`, `info`, `help`, `settings`, `view`, `list`, `grid`, `details`, `month`,
+`agenda`, `day`, `today`, `image`, `text`, `palette`, `link`, `mail`, `home`, `sidebar`, `back`, `forward`, `up`,
+`news`, `podcast`, `feeds`, `lines`, `clock`, `tag`, `clip`, `checklist`, `activity`. An unknown name shows no icon.
 
 ## Files
 
@@ -322,7 +361,7 @@ start; if something can't work on a small screen, say so in `info` rather than b
   <icon><![CDATA[<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="9" fill="#3b8de0"/><text x="24" y="32" font-size="20" font-family="Arial" font-weight="700" fill="#fff" text-anchor="middle">42</text></svg>]]></icon>
   <window width="320" height="260"/>
   <menu>
-    <menu label="edit"><item label="reset" action="reset" shortcut="Ctrl+R"/></menu>
+    <menu label="edit"><item label="reset" action="reset" shortcut="Ctrl+R" icon="refresh"/></menu>
   </menu>
   <style><![CDATA[
     body { display: grid; place-content: center; gap: 14px; text-align: center; }
@@ -346,27 +385,30 @@ start; if something can't work on a small screen, say so in `info` rather than b
 
 A bigger example, with files: **Paint** (`paint.sky`, in *Applications › Add an app › Examples*) opens pictures
 with `sky.files.open()`, is offered by Files thanks to `<opens>`, starts from `sky.launch.file`, saves with
-`sky.files.write()` and `sky.files.saveAs()`, and remembers its tools with `sky.data`.
+`sky.files.write()` and `sky.files.saveAs()`, and remembers its tools with `sky.data`. Its *Undo*, *Redo* and *Save*
+are buttons of the bar (`<bar>`), kept up to date with `sky.ui.state()` and `sky.ui.dirty()`.
 
 ## Checklist
 
 1. The root is `<sky-app>` with `id` (reverse domain, lowercase) and `version` (`x.y.z`).
 2. `<translations>` has a default language with `name` and `description` (and `info` if there is a menu).
 3. `<icon>` is one inline `<svg>` with a square `viewBox`.
-4. Every text on screen comes from `sky.t()`, every menu `label` is a translation key.
-5. No network, no external URLs, no `localStorage`, no modules, no frameworks.
-6. It works with a finger on a 360 px wide screen (a tap instead of a double click, a long press instead of a right
+4. Every text on screen comes from `sky.t()`, every menu and bar `label` is a translation key.
+5. No menu bar of its own: commands go in `<menu>` (☰) and `<bar>`, with icons on the first level and on every
+   button; their state follows `sky.ui.state()`, unsaved work `sky.ui.dirty()`.
+6. No network, no external URLs, no `localStorage`, no modules, no frameworks.
+7. It works with a finger on a 360 px wide screen (a tap instead of a double click, a long press instead of a right
    click).
-7. Data are read with `sky.data.get()` and saved with `sky.data.set()`.
-8. Files come only from `sky.files.open()`, `sky.launch.file` and `sky.files.saveAs()`; `null` (the user gave up)
+8. Data are read with `sky.data.get()` and saved with `sky.data.set()`.
+9. Files come only from `sky.files.open()`, `sky.launch.file` and `sky.files.saveAs()`; `null` (the user gave up)
    and the error codes are handled; `write` is used only when `file.editable` is true.
-9. If the app opens files from Files, `<opens types="…">` lists their extensions and types.
-10. Colours use the `--sky-*` variables, so the app works in light and dark themes.
-11. To update an existing app: same `id`, higher `version`, and a `<migrate from="…">` if the shape of the data
+10. If the app opens files from Files, `<opens types="…">` lists their extensions and types.
+11. Colours use the `--sky-*` variables, so the app works in light and dark themes.
+12. To update an existing app: same `id`, higher `version`, and a `<migrate from="…">` if the shape of the data
     changed.
-
----
 
 ## License
 
 [GNU General Public License v3.0](LICENSE) — the apps in this repository, and what you build from them if you share it.
+The Universe theme carries the Nunito font (The Nunito Project Authors), under the
+[SIL Open Font License 1.1](themes/universe/nunito-OFL.txt).

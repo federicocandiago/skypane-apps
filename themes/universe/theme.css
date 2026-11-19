@@ -174,8 +174,8 @@
 .icon-btn { border-radius: 50%; }
 .icon-btn:hover { border-color: #8fdcf6; box-shadow: 0 0 10px rgba(52, 190, 237, .35); }
 .segmented { border-radius: 999px; border-width: 2px; }
-.segmented > :first-child, .segmented label:first-child span { border-radius: 999px 0 0 999px; }
-.segmented > :last-child, .segmented label:last-child span { border-radius: 0 999px 999px 0; }
+.segmented > :first-child, .segmented label:first-child > span { border-radius: 999px 0 0 999px; }
+.segmented > :last-child, .segmented label:last-child > span { border-radius: 0 999px 999px 0; }
 input, select, textarea { border-radius: 12px; }
 .switch input:checked { background: linear-gradient(#5fd2f7, #1a9fd6); box-shadow: 0 0 8px rgba(52, 190, 237, .45); }
 .switch input::after { box-shadow: 0 1px 3px rgba(60, 70, 80, .35); }
