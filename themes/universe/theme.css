@@ -1,0 +1,296 @@
+/*
+ * Universe — a Skypane theme, and the example of how a theme is made (see ../README.md).
+ *
+ * The friendly home screens of the late 2000s: white and silver panels, thin grey stripes, sky-blue light,
+ * everything round and soft, buttons like pills that click. Dark: the same in charcoal, the blue glowing.
+ *
+ * A theme is a folder: manifest.json (name, description, modes, wallpapers) and this theme.css, plus any font
+ * or picture it uses, next to it. Skypane loads ui.css (every page) and shell.css (the desktop) first, then this
+ * file, in the desktop and in every window and widget: what is here wins.
+ *
+ * It does three things, in this order:
+ *   1. sets the variables (--sky-*, --win-*, --taskbar-*, --widget-*…) for light and for dark: that alone
+ *      already gives a complete theme;
+ *   2. restyles a few pieces where variables are not enough (buttons, windows, the bar, the icons);
+ *   3. draws its wallpapers, in CSS only (.wp-{id}, the ids listed in manifest.json).
+ */
+
+/*
+ * Fonts and pictures live next to theme.css and are named without a path: url("nunito.woff2"). Skypane serves
+ * all the files of a theme together, with one version, so a changed font is never mixed with an old stylesheet.
+ * No external addresses (no Google Fonts, no CDN): the page would refuse them.
+ */
+/* Nunito (SIL Open Font License, nunito-OFL.txt): round and friendly, close to the lettering of those screens */
+@font-face {
+    font-family: "Skypane Rounded";
+    src: url("nunito.woff2") format("woff2");
+    font-weight: 400 800;
+    font-display: swap;
+}
+/* The same in light and dark: the font, the roundness of things, the window's inner padding. */
+:root {
+    --sky-font: "Skypane Rounded", ui-rounded, "Arial Rounded MT Bold", "Segoe UI", system-ui, sans-serif;
+    --sky-radius: 14px;
+    --sky-radius-small: 10px;
+    --win-radius: 20px;
+    --win-pad: 6px;
+    --widget-radius: 22px;
+}
+/*
+ * The light set. sky.js puts data-scheme="light" or "dark" on <html> (following the user's choice, or the
+ * system), so [data-scheme="light"] and [data-scheme="dark"] hold the two palettes. A mode a theme doesn't
+ * have (manifest "modes") is never asked for.
+ *
+ *   --sky-*       every window's content: text, backgrounds, borders, buttons, focus, the accent colour
+ *   --win-*       the windows' frames: background, border, title, gloss, the close button, shadow
+ *   --taskbar-*   the bar; --task-* its window buttons; --start-bg the Start menu; --icon-label desktop names
+ *   --widget-*    the glass of the desktop's widgets and the text inside them
+ *   --tile-*      not Skypane's: a theme may add variables of its own and use them below
+ */
+[data-scheme="light"] {
+    /* silver and white, grey ink, the light is sky blue */
+    --sky-text: #4a5259;
+    --sky-muted: #858d95;
+    --sky-bg: #f4f5f6;
+    --sky-surface: #ffffff;
+    --sky-sunken: #eceef0;
+    --sky-border: #cfd3d7;
+    --sky-hover: rgba(52, 190, 237, .1);
+    --sky-selected: rgba(52, 190, 237, .18);
+    --sky-accent: #1a9fd6;
+    --sky-accent-text: #ffffff;
+    --sky-accent-soft: #dff4fc;
+    --sky-ok: #3cae3f;
+    --sky-danger: #e04848;
+    --sky-shadow: 0 0 0 2px #d6dade, 0 10px 28px rgba(60, 70, 80, .16);
+    --sky-focus: 0 0 0 3px rgba(52, 190, 237, .5), 0 0 12px rgba(52, 190, 237, .45);
+    /* buttons: the ordinary ones and the main one (Save, OK…) */
+    --sky-button: linear-gradient(#ffffff 0%, #f7f8f9 55%, #e9ebed 100%);
+    --sky-button-hover: linear-gradient(#ffffff 0%, #f0fafe 55%, #def3fb 100%);
+    --sky-button-border: #c4c9ce;
+    --sky-primary: linear-gradient(#5fd2f7 0%, #26b0e6 55%, #1a9fd6 100%);
+    --sky-primary-border: #1590c6;
+    --sky-card: #ffffff;
+    --sky-card-border: #d3d7db;
+    /* windows */
+    --win-frame: #ffffff;
+    --win-frame-inactive: #fafbfb;
+    --win-border: #cdd2d6;
+    --win-title: #59626b;
+    --win-title-inactive: #a2a9af;
+    --win-gloss: none;
+    --win-close: linear-gradient(#ffa3a3, #ea5f5f);
+    --win-shadow: 0 0 0 1px #8fdcf6, 0 0 0 4px rgba(52, 190, 237, .18), 0 14px 34px rgba(60, 70, 80, .2);
+    /* the bar, its buttons, the Start menu, the names under the icons */
+    --taskbar-bg: linear-gradient(#fbfbfc, #e1e4e7);
+    --taskbar-text: #5a636b;
+    --task-bg: linear-gradient(#ffffff, #eff1f3);
+    --task-active: linear-gradient(#f2fbfe, #d9f2fb);
+    --start-bg: #ffffff;
+    --icon-label: #59626b;
+    /* widgets: weather, next events, news… (the sticky note keeps its paper colours) */
+    --widget-bg: linear-gradient(#ffffff, #f1f3f4);
+    --widget-border: #cdd2d6;
+    --widget-shadow: 0 4px 14px rgba(60, 70, 80, .14);
+    --widget-blur: none;
+    --widget-text: #4a5259;
+    --widget-muted: #8a9198;
+    --widget-text-shadow: none;
+    --widget-tile: #eef1f3;
+    --widget-hover: rgba(52, 190, 237, .14);
+    /* our own: the channel tiles of the desktop */
+    --tile-bg: linear-gradient(#ffffff, #f1f2f4);
+    --tile-border: #d0d4d8;
+    color-scheme: light;
+}
+[data-scheme="dark"] {
+    /* the same at night: charcoal, light grey ink, the blue glowing */
+    --sky-text: #e3e8ec;
+    --sky-muted: #98a2ab;
+    --sky-bg: #1a1c1f;
+    --sky-surface: #222529;
+    --sky-sunken: #16181a;
+    --sky-border: #3a3f45;
+    --sky-hover: rgba(52, 190, 237, .1);
+    --sky-selected: rgba(52, 190, 237, .2);
+    --sky-accent: #34beed;
+    --sky-accent-text: #04202c;
+    --sky-accent-soft: #12313d;
+    --sky-ok: #5cc95f;
+    --sky-danger: #ff6b6b;
+    --sky-shadow: 0 0 0 2px #33383d, 0 10px 28px rgba(0, 0, 0, .5);
+    --sky-focus: 0 0 0 3px rgba(52, 190, 237, .55), 0 0 12px rgba(52, 190, 237, .45);
+    --sky-button: linear-gradient(#34383d 0%, #2c3034 55%, #25282c 100%);
+    --sky-button-hover: linear-gradient(#36414a 0%, #2d3942 55%, #27323a 100%);
+    --sky-button-border: #474d54;
+    --sky-primary: linear-gradient(#5fd2f7 0%, #26b0e6 55%, #1a9fd6 100%);
+    --sky-primary-border: #1590c6;
+    --sky-card: #222529;
+    --sky-card-border: #3a3f45;
+    --win-frame: #26292d;
+    --win-frame-inactive: #212327;
+    --win-border: #3d4248;
+    --win-title: #e3e8ec;
+    --win-title-inactive: #7f8890;
+    --win-gloss: none;
+    --win-close: linear-gradient(#ff8f8f, #d94a4a);
+    --win-shadow: 0 0 0 1px rgba(52, 190, 237, .7), 0 0 0 4px rgba(52, 190, 237, .14), 0 0 22px rgba(52, 190, 237, .18), 0 14px 34px rgba(0, 0, 0, .55);
+    --taskbar-bg: linear-gradient(#2e3135, #1c1e21);
+    --taskbar-text: #d9dfe4;
+    --task-bg: linear-gradient(#33373b, #2a2d31);
+    --task-active: linear-gradient(#1f3a46, #18303a);
+    --start-bg: #222529;
+    --icon-label: #e3e8ec;
+    --widget-bg: linear-gradient(#2c2f33, #232629);
+    --widget-border: #42484e;
+    --widget-shadow: 0 4px 14px rgba(0, 0, 0, .4);
+    --widget-blur: none;
+    --widget-text: #e3e8ec;
+    --widget-muted: #9ea8b1;
+    --widget-text-shadow: none;
+    --widget-tile: rgba(255, 255, 255, .05);
+    --widget-hover: rgba(52, 190, 237, .16);
+    --tile-bg: linear-gradient(#2e3135, #26292c);
+    --tile-border: #41474d;
+    color-scheme: dark;
+}
+
+/*
+ * From here on, ordinary CSS on Skypane's own classes: .btn, .icon-btn, .segmented, .switch (ui.css, in every
+ * window) and .win, .taskbar, .task, .start-button, .desktop-icon, .dock (shell.css, the desktop). Keep to
+ * looks — colours, borders, roundness, shadows — and leave sizes and positions as they are: phones depend on them.
+ */
+/* ── Glow: what can be touched lights up in sky blue, as under a pointer of those screens ───────── */
+.btn, .icon-btn, .task, .desktop-icon, .tray-button, .start-button { transition: box-shadow .15s, border-color .15s, transform .08s; }
+.btn:active, .icon-btn:active, .task:active, .desktop-icon:active { transform: scale(.96); }
+
+/* pill buttons, white, a thick soft rim; the main one blue with a shine on top */
+.btn { border-radius: 999px; padding-inline: 18px; border-width: 2px; font-weight: 700; color: var(--sky-text); box-shadow: inset 0 1px 0 #fff, 0 1px 2px rgba(60, 70, 80, .12); }
+.btn:hover { border-color: #5fd2f7; box-shadow: 0 0 0 3px rgba(52, 190, 237, .22), 0 0 10px rgba(52, 190, 237, .35); }
+.btn.is-primary { color: #fff; text-shadow: 0 -1px 0 rgba(0, 90, 130, .35); box-shadow: inset 0 2px 0 rgba(255, 255, 255, .45), 0 2px 6px rgba(26, 159, 214, .35); }
+.btn.is-primary:hover { box-shadow: inset 0 2px 0 rgba(255, 255, 255, .45), 0 0 0 3px rgba(52, 190, 237, .3), 0 0 14px rgba(52, 190, 237, .55); }
+[data-scheme="dark"] .btn { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .07), 0 1px 2px rgba(0, 0, 0, .35); }
+[data-scheme="dark"] .btn.is-primary { color: #04202c; text-shadow: 0 1px 0 rgba(255, 255, 255, .3); }
+.icon-btn { border-radius: 50%; }
+.icon-btn:hover { border-color: #8fdcf6; box-shadow: 0 0 10px rgba(52, 190, 237, .35); }
+.segmented { border-radius: 999px; border-width: 2px; }
+.segmented > :first-child, .segmented label:first-child span { border-radius: 999px 0 0 999px; }
+.segmented > :last-child, .segmented label:last-child span { border-radius: 0 999px 999px 0; }
+input, select, textarea { border-radius: 12px; }
+.switch input:checked { background: linear-gradient(#5fd2f7, #1a9fd6); box-shadow: 0 0 8px rgba(52, 190, 237, .45); }
+.switch input::after { box-shadow: 0 1px 3px rgba(60, 70, 80, .35); }
+
+/* Nunito is light at the usual weights: titles and labels a step bolder, round and full */
+h1, h2, h3, .field > span, .setting-title { font-weight: 800; }
+strong, b, th { font-weight: 700; }
+
+/* ── Windows: white frames with a thick soft rim, the content rounded inside like a screen ───────── */
+.win { border-width: 2px; }
+.win-body { border-radius: 14px; border-color: #dcdfe2; }
+[data-scheme="dark"] .win-body { border-color: #34383d; }
+.win-title h2 { font-size: 14px; font-weight: 800; letter-spacing: .01em; text-shadow: none; }
+.win.is-inactive { box-shadow: 0 8px 24px rgba(60, 70, 80, .14); }
+[data-scheme="dark"] .win.is-inactive { box-shadow: 0 8px 24px rgba(0, 0, 0, .45); }
+.taskbar::before, .win::before { display: none; }
+/* the window's buttons: round, grey, the close one soft red */
+.win-buttons { gap: 6px; align-items: center; }
+.win-buttons button { width: 26px; height: 22px; border-radius: 999px; color: #6b747c; background: linear-gradient(#ffffff, #eceef0); border: 2px solid #ccd1d5; }
+.win-buttons button:hover { background: #ffffff; border-color: #5fd2f7; box-shadow: 0 0 8px rgba(52, 190, 237, .45); }
+.win-buttons .win-close { width: 34px; color: #fff; border-color: #d44c4c; }
+[data-scheme="dark"] .win-buttons button:not(.win-close) { color: #c9d0d6; background: linear-gradient(#3a3e43, #2f3236); border-color: #4a5057; }
+
+/* ── The desktop: every icon a channel, a white tile with a thick grey rim that lights up blue ───── */
+.desktop-icons { gap: 10px; }
+.desktop-icon { height: 100px; grid-template-rows: 48px auto; align-content: start; padding: 9px 4px 7px; color: var(--icon-label); background: var(--tile-bg); border: 2px solid var(--tile-border); border-radius: 16px; text-shadow: none; box-shadow: 0 2px 5px rgba(60, 70, 80, .1); }
+.desktop-icon:hover { background: var(--tile-bg); border-color: #5fd2f7; box-shadow: 0 0 0 3px rgba(52, 190, 237, .25), 0 0 16px rgba(52, 190, 237, .5); }
+.desktop-icon:focus-visible, .desktop-icon.is-selected { background: var(--tile-bg); border-color: #34beed; box-shadow: 0 0 0 3px rgba(52, 190, 237, .35), 0 0 18px rgba(52, 190, 237, .55); }
+.desktop-icon img { filter: drop-shadow(0 2px 3px rgba(60, 70, 80, .25)); }
+[data-scheme="dark"] .desktop-icon { box-shadow: 0 2px 6px rgba(0, 0, 0, .35); }
+
+/* ── The bar: soft silver, round on top; the Start button a round button with a grey ring ───────── */
+.taskbar { border-top: 2px solid #cdd2d6; border-radius: 20px 20px 0 0; box-shadow: 0 -4px 16px rgba(60, 70, 80, .1); }
+[data-scheme="dark"] .taskbar { border-top-color: #3d4248; box-shadow: 0 -4px 16px rgba(0, 0, 0, .35); }
+body.layout-top .taskbar { border-top: 0; border-bottom: 2px solid #cdd2d6; border-radius: 0 0 20px 20px; }
+[data-scheme="dark"] body.layout-top .taskbar { border-bottom-color: #3d4248; }
+body.layout-mac .taskbar { border-top: 0; border-radius: 0; }
+body.layout-mac .dock { border: 2px solid var(--tile-border); border-radius: 22px; }
+.start-button img { position: relative; z-index: 1; width: 30px; height: 30px; filter: none; }
+.start-button::before { content: ""; position: absolute; width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(#ffffff, #e6e9ec); border: 2px solid #c4c9ce; box-shadow: 0 1px 3px rgba(60, 70, 80, .2); transition: box-shadow .15s, border-color .15s; }
+.start-button:hover::before, .start-button[aria-expanded="true"]::before { border-color: #34beed; box-shadow: 0 0 0 3px rgba(52, 190, 237, .25), 0 0 14px rgba(52, 190, 237, .55); }
+.start-button:hover img, .start-button[aria-expanded="true"] img { transform: none; filter: none; }
+[data-scheme="dark"] .start-button::before { background: linear-gradient(#3a3e43, #2c2f33); border-color: #4a5057; }
+.task { border: 2px solid var(--tile-border); border-radius: 999px; box-shadow: none; }
+.task span { text-shadow: none; font-weight: 700; }
+.task:hover { background: var(--task-bg); border-color: #8fdcf6; box-shadow: 0 0 10px rgba(52, 190, 237, .35); }
+.task.is-active { border-color: #5fd2f7; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .6); }
+.clock { font-size: 15px; font-weight: 800; letter-spacing: .02em; text-shadow: none; }
+.tray-button:hover { background: rgba(52, 190, 237, .14); }
+.start-menu, .notify-panel, .clock-panel { border: 2px solid var(--tile-border) !important; border-radius: 22px !important; }
+
+/*
+ * Wallpapers: one class per id of manifest.json "wallpapers" (the first is the default), drawn with gradients
+ * only. [data-scheme="dark"] .wp-… gives the night version of the same wallpaper.
+ */
+/* ── Wallpapers ─────────────────────────────────────────────────────── */
+/* the home of channels: pale silver, thin horizontal lines, a soft light in the middle */
+.wp-channels {
+    background:
+        repeating-linear-gradient(0deg, rgba(150, 156, 162, .13) 0 2px, transparent 2px 6px),
+        radial-gradient(ellipse 70% 50% at 50% 40%, #ffffff, transparent 70%),
+        linear-gradient(#f2f3f4, #dcdfe2);
+}
+/* the plaza: sky, soft round clouds and light */
+.wp-plaza {
+    background:
+        radial-gradient(circle at 18% 72%, rgba(255, 255, 255, .9) 0 7%, transparent 7.5%),
+        radial-gradient(circle at 26% 70%, rgba(255, 255, 255, .9) 0 9%, transparent 9.5%),
+        radial-gradient(circle at 76% 32%, rgba(255, 255, 255, .85) 0 6%, transparent 6.5%),
+        radial-gradient(circle at 83% 30%, rgba(255, 255, 255, .85) 0 8%, transparent 8.5%),
+        radial-gradient(ellipse 120% 40% at 50% 112%, #a8e27a 0 60%, transparent 61%),
+        linear-gradient(#5cc8f2, #b7e9fb 60%, #e9f8fe);
+}
+/* orbit: rings of light around a blue planet, on silver */
+.wp-orbit {
+    background:
+        radial-gradient(circle at 62% 46%, transparent 0 21%, rgba(52, 190, 237, .35) 21.3%, transparent 21.8%),
+        radial-gradient(circle at 62% 46%, transparent 0 31%, rgba(52, 190, 237, .2) 31.3%, transparent 31.8%),
+        radial-gradient(circle at 62% 46%, transparent 0 42%, rgba(120, 140, 160, .15) 42.3%, transparent 42.8%),
+        radial-gradient(circle at 62% 46%, #b8ecfd 0, #34beed 9%, #1a8cc4 13%, transparent 13.5%),
+        repeating-linear-gradient(0deg, rgba(120, 140, 160, .05) 0 1px, transparent 1px 5px),
+        linear-gradient(160deg, #ffffff, #e4e9ed);
+}
+/* stripes: white and pale grey bands, a blue one */
+.wp-stripes {
+    background:
+        linear-gradient(transparent 78%, rgba(52, 190, 237, .55) 78%, rgba(52, 190, 237, .55) 80%, transparent 80%),
+        repeating-linear-gradient(0deg, #f6f8f9 0 26px, #edf1f3 26px 52px);
+}
+[data-scheme="dark"] .wp-channels {
+    background:
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, .03) 0 1px, transparent 1px 5px),
+        radial-gradient(ellipse 70% 50% at 50% 40%, #2c3238, transparent 70%),
+        linear-gradient(#1d2126, #111316);
+}
+[data-scheme="dark"] .wp-plaza {
+    background:
+        radial-gradient(circle at 20% 22%, rgba(255, 255, 255, .7) 0 .25%, transparent .4%),
+        radial-gradient(circle at 44% 12%, rgba(255, 255, 255, .6) 0 .2%, transparent .35%),
+        radial-gradient(circle at 70% 26%, rgba(255, 255, 255, .7) 0 .25%, transparent .4%),
+        radial-gradient(circle at 86% 14%, rgba(255, 255, 255, .5) 0 .2%, transparent .35%),
+        radial-gradient(circle at 78% 30%, #f4f9ff 0 4%, transparent 4.5%),
+        radial-gradient(ellipse 120% 40% at 50% 112%, #1d3a2a 0 60%, transparent 61%),
+        linear-gradient(#0b1726, #173452 60%, #23527a);
+}
+[data-scheme="dark"] .wp-orbit {
+    background:
+        radial-gradient(circle at 62% 46%, transparent 0 21%, rgba(52, 190, 237, .4) 21.3%, transparent 21.8%),
+        radial-gradient(circle at 62% 46%, transparent 0 31%, rgba(52, 190, 237, .22) 31.3%, transparent 31.8%),
+        radial-gradient(circle at 62% 46%, transparent 0 42%, rgba(255, 255, 255, .08) 42.3%, transparent 42.8%),
+        radial-gradient(circle at 62% 46%, #b8ecfd 0, #34beed 9%, #136b98 13%, transparent 13.5%),
+        linear-gradient(160deg, #22272d, #101215);
+}
+[data-scheme="dark"] .wp-stripes {
+    background:
+        linear-gradient(transparent 78%, rgba(52, 190, 237, .5) 78%, rgba(52, 190, 237, .5) 80%, transparent 80%),
+        repeating-linear-gradient(0deg, #1c2025 0 26px, #181b1f 26px 52px);
+}

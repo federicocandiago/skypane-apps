@@ -1,0 +1,23 @@
+# Universe — Italian. A theme carries its translations in lang/{locale}.po (gettext): msgid in English, msgstr translated.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: it\n"
+
+msgid "Universe"
+msgstr "Universe"
+
+msgid "White and silver, soft grey stripes, sky-blue light and round, friendly buttons that click: the playful home screens of the late 2000s. At night, the same in charcoal."
+msgstr "Bianco e argento, righe grigie leggere, luce azzurro cielo e pulsanti tondi e simpatici che fanno clic: le schermate home giocose della fine degli anni 2000. Di notte, lo stesso in grigio antracite."
+
+msgid "Channels"
+msgstr "Canali"
+
+msgid "Plaza"
+msgstr "Piazza"
+
+msgid "Orbit"
+msgstr "Orbita"
+
+msgid "Stripes"
+msgstr "Righe"

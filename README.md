@@ -1,7 +1,7 @@
 # Skypane apps
 
-Games and apps for **Skypane**, the desktop in the browser: each one a single `.sky` file you install in a few
-seconds, and an example to learn from.
+Games, apps and themes for **Skypane**, the desktop in the browser: each app a single `.sky` file you install in a
+few seconds, each theme a folder — and an example to learn from.
 
 | | App | What it is |
 |---|---|---|
@@ -11,6 +11,10 @@ seconds, and an example to learn from.
 | 📝 | [`apps/notes.sky`](apps/notes.sky) | **Notes**: a tiny list of notes, and the smallest complete example of the format (menu, shortcuts, an asset, a data migration) |
 
 Every app speaks English and Italian, follows the light and dark themes of the desktop, and works on phones too.
+
+| | Theme | What it is |
+|---|---|---|
+| 🌐 | [`themes/universe/`](themes/universe/) | **Universe**: white and silver, icons as channel tiles that light up sky blue, round pill buttons, a soft round bar; charcoal by night. Commented line by line: the example of how a theme is made ([the guide](themes/README.md)) |
 
 ## Install one
 
@@ -27,6 +31,13 @@ Your files stay closed to it too, except the ones you give it yourself: a file y
 window, one you open with the app from **Files › Open with…**, or one you save in Skypane's Save as window. Those
 windows belong to Skypane, not to the app, so the app can't choose for you or look around. Paint, for instance,
 sees only the pictures you open in it and the drawings you save.
+
+## Install a theme
+
+Zip the theme's folder (`themes/universe/` → a `.zip` holding `universe/manifest.json`, `universe/theme.css`…), then
+in Skypane **Administration › Themes › Upload**, turn it on, and choose it in **Settings › Appearance › Theme**.
+Universe already comes with Skypane: this copy is here to be read and copied. How a theme is made:
+[themes/README.md](themes/README.md).
 
 ## On phones
 
