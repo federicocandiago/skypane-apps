@@ -68,7 +68,7 @@
     --sky-button: linear-gradient(#ffffff 0%, #f7f8f9 55%, #e9ebed 100%);
     --sky-button-hover: linear-gradient(#ffffff 0%, #f0fafe 55%, #def3fb 100%);
     --sky-button-border: #c4c9ce;
-    --sky-primary: linear-gradient(#5fd2f7 0%, #26b0e6 55%, #1a9fd6 100%);
+    --sky-primary: linear-gradient(#4cc6ef 0%, #1b96cd 55%, #1182b7 100%);
     --sky-primary-border: #1590c6;
     --sky-card: #ffffff;
     --sky-card-border: #d3d7db;
@@ -123,7 +123,7 @@
     --sky-button: linear-gradient(#34383d 0%, #2c3034 55%, #25282c 100%);
     --sky-button-hover: linear-gradient(#36414a 0%, #2d3942 55%, #27323a 100%);
     --sky-button-border: #474d54;
-    --sky-primary: linear-gradient(#5fd2f7 0%, #26b0e6 55%, #1a9fd6 100%);
+    --sky-primary: linear-gradient(#4cc6ef 0%, #1b96cd 55%, #1182b7 100%);
     --sky-primary-border: #1590c6;
     --sky-card: #222529;
     --sky-card-border: #3a3f45;
