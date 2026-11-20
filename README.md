@@ -81,6 +81,8 @@ The app runs in a sandboxed window: a page with no cookies, no network and no ac
   - **open, read and save the user's files — only those the user chooses for it** in Skypane's own Open and
     Save as windows, or opens with it from Files (`sky.files`, see *Files* below);
   - show toasts and confirmations, set its title, fill ☰ and the bar of its window, open another window of itself;
+  - ask its own question before its window closes, with OK and Cancel (`sky.ui.confirmClose(text)`: Paint asks it
+    when the drawing has unsaved changes);
   - use its own pictures, sounds and fonts (assets) and texts (translations);
   - follow the desktop's theme, light and dark.
 - **It cannot**

@@ -6,7 +6,7 @@
   <opens> offers the app in «Open with…» of Files, and sky.launch.file is the picture it was opened with.
   The tool, colour and size are remembered with sky.data.
 -->
-<sky-app id="net.skypane.paint" version="1.1.0" author="Skypane">
+<sky-app id="net.skypane.paint" version="1.2.0" author="Skypane">
 
   <translations>
     <lang code="en" default="true"><![CDATA[{
@@ -20,7 +20,7 @@
       "pencil": "Pencil", "brush": "Brush", "eraser": "Eraser", "line": "Line", "rect": "Rectangle", "ellipse": "Ellipse", "fill": "Fill", "picker": "Pick a colour",
       "filled": "Filled shapes", "size": "Size", "colour": "Colour", "more": "Other colour",
       "saved": "Saved in «{name}».", "opened": "«{name}» opened.",
-      "discard": "Leave the changes of this drawing?", "changed": "This picture was changed elsewhere after you opened it. Save over it?",
+      "discard": "Leave the changes of this drawing?", "leave": "«{name}» has changes that are not saved. Close it anyway?", "changed": "This picture was changed elsewhere after you opened it. Save over it?",
       "notPicture": "This file is not a picture Paint can open.", "readOnly": "This picture is read only for you: use «Save as…» to keep a copy.",
       "big": "This picture is big: it was made smaller to fit ({w} × {h})."
     }]]></lang>
@@ -35,7 +35,7 @@
       "pencil": "Matita", "brush": "Pennello", "eraser": "Gomma", "line": "Linea", "rect": "Rettangolo", "ellipse": "Ellisse", "fill": "Riempimento", "picker": "Preleva un colore",
       "filled": "Forme piene", "size": "Dimensione", "colour": "Colore", "more": "Altro colore",
       "saved": "Salvato in «{name}».", "opened": "«{name}» aperto.",
-      "discard": "Lasciare le modifiche di questo disegno?", "changed": "Questa immagine è stata cambiata altrove dopo che l'hai aperta. Salvare sopra?",
+      "discard": "Lasciare le modifiche di questo disegno?", "leave": "«{name}» ha modifiche non salvate. Chiuderlo comunque?", "changed": "Questa immagine è stata cambiata altrove dopo che l'hai aperta. Salvare sopra?",
       "notPicture": "Questo file non è un'immagine che Disegno sa aprire.", "readOnly": "Per te questa immagine è in sola lettura: usa «Salva con nome…» per tenerne una copia.",
       "big": "Questa immagine è grande: è stata rimpicciolita ({w} × {h})."
     }]]></lang>
@@ -201,6 +201,8 @@
       document.getElementById('dims').textContent = `${canvas.width} × ${canvas.height}`;
       tell('title', name, () => sky.ui.title(name));
       tell('dirty', dirty, () => { sky.ui.dirty(dirty); sky.ui.state('save', { hidden: !dirty }); });
+      // closing the window with unsaved changes asks Paint's own question (an older Skypane, without it, asks its own)
+      tell('leave', dirty ? name : '', () => sky.ui.confirmClose?.(dirty ? t('leave', { name }) : null)?.catch(() => {}));
       tell('undo', !undo.length, () => sky.ui.state('undo', { disabled: !undo.length }));
       tell('redo', !redo.length, () => sky.ui.state('redo', { disabled: !redo.length }));
     }
