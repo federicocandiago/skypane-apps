@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- solitaire.sky — Klondike patience, as a .sky app. Cards are drawn with CSS; the game is saved as you play. -->
-<sky-app id="net.skypane.solitaire" version="1.2.0" author="Skypane">
+<!-- solitaire.bead — Klondike patience, as a .bead app. Cards are drawn with CSS; the game is saved as you play. -->
+<bead-app id="net.rainbead.solitaire" version="1.2.0" author="Rainbead">
 
   <translations>
     <lang code="en" default="true"><![CDATA[{
@@ -63,7 +63,7 @@
 
   <window width="760" height="560"/>
 
-  <!-- ☰ in Skypane's bar: the first menu is its first level, «Cards ›» a second level with ✓ on the way of drawing -->
+  <!-- ☰ in Rainbead's bar: the first menu is its first level, «Cards ›» a second level with ✓ on the way of drawing -->
   <menu>
     <menu label="game">
       <item label="new" action="new" shortcut="F2" icon="play"/>
@@ -96,13 +96,13 @@
     .card.red { color: #d32f2f; }
     .card.down { cursor: default; border: 2px solid #fff; background:
         repeating-linear-gradient(45deg, rgba(255,255,255,.15) 0 4px, transparent 4px 8px),
-        linear-gradient(135deg, var(--sky-accent), color-mix(in srgb, var(--sky-accent) 60%, #000)); }
+        linear-gradient(135deg, var(--bead-accent), color-mix(in srgb, var(--bead-accent) 60%, #000)); }
     .card .tl { position: absolute; top: 3px; left: 5px; font: 700 calc(var(--w) * .2)/1 Georgia, serif; text-align: center; }
     .card .br { position: absolute; bottom: 3px; right: 5px; font: 700 calc(var(--w) * .2)/1 Georgia, serif; transform: rotate(180deg); text-align: center; }
     .card .mid { position: absolute; inset: 0; display: grid; place-items: center; font-size: calc(var(--w) * .45); }
     .card.dragging { box-shadow: 0 10px 20px rgba(0,0,0,.4); transition: none; z-index: 1000 !important; cursor: grabbing; }
     .card.hint { outline: 3px solid #ffd54f; }
-    #bar { display: flex; gap: 18px; padding: 4px 12px; font-size: 12.5px; color: var(--sky-muted); background: var(--sky-surface); border-top: 1px solid var(--sky-border); }
+    #bar { display: flex; gap: 18px; padding: 4px 12px; font-size: 12.5px; color: var(--bead-muted); background: var(--bead-surface); border-top: 1px solid var(--bead-border); }
     #bar .spacer { flex: 1; }
     #won, .modal { position: absolute; inset: 0; z-index: 2000; display: grid; place-items: center; padding: 12px; background: rgba(0,0,0,.35); }
     #won .box, .modal .box { text-align: center; max-width: min(420px, 100%); }
@@ -111,7 +111,7 @@
     .modal .row-btns { display: flex; gap: 8px; justify-content: flex-end; }
     .scores { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .scores ol { margin: 4px 0 0; padding-left: 20px; font-size: 13px; }
-    .scores li.is-new { font-weight: 700; color: var(--sky-accent); }
+    .scores li.is-new { font-weight: 700; color: var(--bead-accent); }
     .scores h3 { margin: 0; font-size: 13px; }
     @media (max-width: 420px) { .scores { grid-template-columns: 1fr; } }
     #finish { position: absolute; right: 10px; bottom: 10px; z-index: 1500; }
@@ -288,10 +288,10 @@
     }
 
     function render() {
-      // the bar and ☰ (Skypane's): what can be undone, how cards are drawn
-      sky.ui.state('undo', { disabled: !undoStack.length || finishing });
-      sky.ui.state('draw1', { checked: !game.drawThree });
-      sky.ui.state('draw3', { checked: !!game.drawThree });
+      // the bar and ☰ (Rainbead's): what can be undone, how cards are drawn
+      bead.ui.state('undo', { disabled: !undoStack.length || finishing });
+      bead.ui.state('draw1', { checked: !game.drawThree });
+      bead.ui.state('draw3', { checked: !!game.drawThree });
       measure();
       table.innerHTML = '';
       const { x, top: y0, row } = layout;
@@ -337,14 +337,14 @@
           yy += layout.h * (c.up ? faceUp : 0.1);
         });
       });
-      document.getElementById('moves').textContent = sky.t('moves', { n: game.moves });
-      document.getElementById('stats').textContent = sky.t('stats', { w: stats.won, p: stats.played });
+      document.getElementById('moves').textContent = bead.t('moves', { n: game.moves });
+      document.getElementById('stats').textContent = bead.t('stats', { w: stats.won, p: stats.played });
       clock();
       if (solved() && !finishing) {
         const b = document.createElement('button');
         b.id = 'finish';
         b.className = 'btn is-primary';
-        b.textContent = sky.t('finish');
+        b.textContent = bead.t('finish');
         b.onclick = finish;
         table.append(b);
       }
@@ -399,16 +399,16 @@
     function askName() {
       return new Promise((resolve) => {
         modal((box, close) => {
-          box.append(el('h2', '', sky.t('won')), el('p', 'muted', sky.t('wonIn', { n: game.moves, t: format(game.seconds) })));
+          box.append(el('h2', '', bead.t('won')), el('p', 'muted', bead.t('wonIn', { n: game.moves, t: format(game.seconds) })));
           const label = el('label', 'field');
-          label.append(el('span', '', sky.t('yourName')));
+          label.append(el('span', '', bead.t('yourName')));
           const input = el('input');
           input.maxLength = 30;
           input.value = lastName;
           label.append(input);
           const btns = el('div', 'row-btns');
-          const skip = el('button', 'btn', sky.t('skip'));
-          const ok = el('button', 'btn is-primary', sky.t('save'));
+          const skip = el('button', 'btn', bead.t('skip'));
+          const ok = el('button', 'btn is-primary', bead.t('save'));
           btns.append(skip, ok);
           box.append(label, btns);
           const done = (name) => { close(); resolve(name); };
@@ -422,22 +422,22 @@
 
     function showScores(fresh = null) {
       modal((box, close) => {
-        box.append(el('h2', '', sky.t('scores')));
+        box.append(el('h2', '', bead.t('scores')));
         const grid = el('div', 'scores');
         [['byTime', (a, b) => a.seconds - b.seconds || a.moves - b.moves], ['byMoves', (a, b) => a.moves - b.moves || a.seconds - b.seconds]].forEach(([title, order]) => {
           const col = el('div');
-          col.append(el('h3', '', sky.t(title)));
+          col.append(el('h3', '', bead.t(title)));
           const ol = el('ol');
           [...scores].sort(order).slice(0, 10).forEach((s) => {
             const li = el('li', s === fresh ? 'is-new' : '', `${s.name} — ${format(s.seconds)} · ${s.moves}`);
             ol.append(li);
           });
-          if (!scores.length) col.append(el('p', 'muted', sky.t('nobody'))); else col.append(ol);
+          if (!scores.length) col.append(el('p', 'muted', bead.t('nobody'))); else col.append(ol);
           grid.append(col);
         });
         const btns = el('div', 'row-btns');
-        const again = el('button', 'btn', sky.t('again'));
-        const shut = el('button', 'btn is-primary', sky.t('close'));
+        const again = el('button', 'btn', bead.t('again'));
+        const shut = el('button', 'btn is-primary', bead.t('close'));
         again.onclick = () => { close(); newGame(false); };
         shut.onclick = close;
         btns.append(again, shut);
@@ -511,17 +511,17 @@
 
     // ── Time, saving, menu ─────────────────────────────────────────────
     const format = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-    function clock() { document.getElementById('time').textContent = sky.t('time', { t: format(game.seconds) }); }
+    function clock() { document.getElementById('time').textContent = bead.t('time', { t: format(game.seconds) }); }
     setInterval(() => { if (game && !game.won && !finishing && document.visibilityState === 'visible') { game.seconds++; clock(); } }, 1000);
 
     let saving = null;
     function save() {
       clearTimeout(saving);
-      saving = setTimeout(() => sky.data.set({ game, stats, scores, lastName }, { force: true }).catch(() => {}), 400);
+      saving = setTimeout(() => bead.data.set({ game, stats, scores, lastName }, { force: true }).catch(() => {}), 400);
     }
 
     async function newGame(ask = true) {
-      if (ask && game && game.moves && !game.won && !(await sky.ui.confirm(sky.t('restart')))) return;
+      if (ask && game && game.moves && !game.won && !(await bead.ui.confirm(bead.t('restart')))) return;
       document.querySelector('.modal')?.remove();
       game = deal(game?.drawThree);
       undoStack = [];
@@ -529,7 +529,7 @@
       render();
     }
 
-    sky.on('menu', (action) => {
+    bead.on('menu', (action) => {
       if (action === 'new') newGame();
       if (action === 'undo' && undoStack.length && !finishing) { game = undoStack.pop(); save(); render(); }
       if (action === 'draw1' || action === 'draw3') { game.drawThree = action === 'draw3'; save(); render(); }
@@ -537,12 +537,12 @@
     });
     addEventListener('resize', () => game && !finishing && !document.querySelector('.modal, #confetti') && render());
 
-    sky.data.get().then((saved) => {
+    bead.data.get().then((saved) => {
       stats = saved?.stats || stats;
       scores = saved?.scores || [];
       lastName = saved?.lastName || '';
       // a window opened with "New game in a new window" starts fresh; otherwise the saved game goes on
-      if (saved?.game && !saved.game.won && sky.launch.action !== 'new') {
+      if (saved?.game && !saved.game.won && bead.launch.action !== 'new') {
         game = saved.game;
         render();
         if (solved()) setTimeout(finish, 500);
@@ -555,4 +555,4 @@
 
   <!-- 1.0.0 kept only the game and the statistics: the scores start empty -->
   <migrate from="1.0.0"><![CDATA[ (data) => ({ ...data, scores: data.scores || [], lastName: data.lastName || '' }) ]]></migrate>
-</sky-app>
+</bead-app>

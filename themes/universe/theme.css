@@ -1,77 +1,77 @@
 /*
- * Universe — a Skypane theme, and the example of how a theme is made (see ../README.md).
+ * Universe — a Rainbead theme, and the example of how a theme is made (see ../README.md).
  *
  * The friendly home screens of the late 2000s: white and silver panels, thin grey stripes, sky-blue light,
  * everything round and soft, buttons like pills that click. Dark: the same in charcoal, the blue glowing.
  *
  * A theme is a folder: manifest.json (name, description, modes, wallpapers) and this theme.css, plus any font
- * or picture it uses, next to it. Skypane loads ui.css (every page) and shell.css (the desktop) first, then this
+ * or picture it uses, next to it. Rainbead loads ui.css (every page) and shell.css (the desktop) first, then this
  * file, in the desktop and in every window and widget: what is here wins.
  *
  * It does three things, in this order:
- *   1. sets the variables (--sky-*, --win-*, --taskbar-*, --widget-*…) for light and for dark: that alone
+ *   1. sets the variables (--bead-*, --win-*, --taskbar-*, --widget-*…) for light and for dark: that alone
  *      already gives a complete theme;
  *   2. restyles a few pieces where variables are not enough (buttons, windows, the bar, the icons);
  *   3. draws its wallpapers, in CSS only (.wp-{id}, the ids listed in manifest.json).
  */
 
 /*
- * Fonts and pictures live next to theme.css and are named without a path: url("nunito.woff2"). Skypane serves
+ * Fonts and pictures live next to theme.css and are named without a path: url("nunito.woff2"). Rainbead serves
  * all the files of a theme together, with one version, so a changed font is never mixed with an old stylesheet.
  * No external addresses (no Google Fonts, no CDN): the page would refuse them.
  */
 /* Nunito (SIL Open Font License, nunito-OFL.txt): round and friendly, close to the lettering of those screens */
 @font-face {
-    font-family: "Skypane Rounded";
+    font-family: "Rainbead Rounded";
     src: url("nunito.woff2") format("woff2");
     font-weight: 400 800;
     font-display: swap;
 }
 /* The same in light and dark: the font, the roundness of things, the window's inner padding. */
 :root {
-    --sky-font: "Skypane Rounded", ui-rounded, "Arial Rounded MT Bold", "Segoe UI", system-ui, sans-serif;
-    --sky-radius: 14px;
-    --sky-radius-small: 10px;
+    --bead-font: "Rainbead Rounded", ui-rounded, "Arial Rounded MT Bold", "Segoe UI", system-ui, sans-serif;
+    --bead-radius: 14px;
+    --bead-radius-small: 10px;
     --win-radius: 20px;
     --win-pad: 6px;
     --widget-radius: 22px;
 }
 /*
- * The light set. sky.js puts data-scheme="light" or "dark" on <html> (following the user's choice, or the
+ * The light set. bead.js puts data-scheme="light" or "dark" on <html> (following the user's choice, or the
  * system), so [data-scheme="light"] and [data-scheme="dark"] hold the two palettes. A mode a theme doesn't
  * have (manifest "modes") is never asked for.
  *
- *   --sky-*       every window's content: text, backgrounds, borders, buttons, focus, the accent colour
+ *   --bead-*       every window's content: text, backgrounds, borders, buttons, focus, the accent colour
  *   --win-*       the windows' frames: background, border, title, gloss, the close button, shadow
  *   --taskbar-*   the bar; --task-* its window buttons; --start-bg the Start menu; --icon-label desktop names
  *   --widget-*    the glass of the desktop's widgets and the text inside them
- *   --tile-*      not Skypane's: a theme may add variables of its own and use them below
+ *   --tile-*      not Rainbead's: a theme may add variables of its own and use them below
  */
 [data-scheme="light"] {
     /* silver and white, grey ink, the light is sky blue */
-    --sky-text: #4a5259;
-    --sky-muted: #858d95;
-    --sky-bg: #f4f5f6;
-    --sky-surface: #ffffff;
-    --sky-sunken: #eceef0;
-    --sky-border: #cfd3d7;
-    --sky-hover: rgba(52, 190, 237, .1);
-    --sky-selected: rgba(52, 190, 237, .18);
-    --sky-accent: #1a9fd6;
-    --sky-accent-text: #ffffff;
-    --sky-accent-soft: #dff4fc;
-    --sky-ok: #3cae3f;
-    --sky-danger: #e04848;
-    --sky-shadow: 0 0 0 2px #d6dade, 0 10px 28px rgba(60, 70, 80, .16);
-    --sky-focus: 0 0 0 3px rgba(52, 190, 237, .5), 0 0 12px rgba(52, 190, 237, .45);
+    --bead-text: #4a5259;
+    --bead-muted: #858d95;
+    --bead-bg: #f4f5f6;
+    --bead-surface: #ffffff;
+    --bead-sunken: #eceef0;
+    --bead-border: #cfd3d7;
+    --bead-hover: rgba(52, 190, 237, .1);
+    --bead-selected: rgba(52, 190, 237, .18);
+    --bead-accent: #1a9fd6;
+    --bead-accent-text: #ffffff;
+    --bead-accent-soft: #dff4fc;
+    --bead-ok: #3cae3f;
+    --bead-danger: #e04848;
+    --bead-shadow: 0 0 0 2px #d6dade, 0 10px 28px rgba(60, 70, 80, .16);
+    --bead-focus: 0 0 0 3px rgba(52, 190, 237, .5), 0 0 12px rgba(52, 190, 237, .45);
     /* buttons: the ordinary ones and the main one (Save, OK…) */
-    --sky-button: linear-gradient(#ffffff 0%, #f7f8f9 55%, #e9ebed 100%);
-    --sky-button-hover: linear-gradient(#ffffff 0%, #f0fafe 55%, #def3fb 100%);
-    --sky-button-border: #c4c9ce;
-    --sky-primary: linear-gradient(#4cc6ef 0%, #1b96cd 55%, #1182b7 100%);
-    --sky-primary-border: #1590c6;
-    --sky-card: #ffffff;
-    --sky-card-border: #d3d7db;
+    --bead-button: linear-gradient(#ffffff 0%, #f7f8f9 55%, #e9ebed 100%);
+    --bead-button-hover: linear-gradient(#ffffff 0%, #f0fafe 55%, #def3fb 100%);
+    --bead-button-border: #c4c9ce;
+    --bead-primary: linear-gradient(#4cc6ef 0%, #1b96cd 55%, #1182b7 100%);
+    --bead-primary-border: #1590c6;
+    --bead-card: #ffffff;
+    --bead-card-border: #d3d7db;
     /* windows */
     --win-frame: #ffffff;
     --win-frame-inactive: #fafbfb;
@@ -105,28 +105,28 @@
 }
 [data-scheme="dark"] {
     /* the same at night: charcoal, light grey ink, the blue glowing */
-    --sky-text: #e3e8ec;
-    --sky-muted: #98a2ab;
-    --sky-bg: #1a1c1f;
-    --sky-surface: #222529;
-    --sky-sunken: #16181a;
-    --sky-border: #3a3f45;
-    --sky-hover: rgba(52, 190, 237, .1);
-    --sky-selected: rgba(52, 190, 237, .2);
-    --sky-accent: #34beed;
-    --sky-accent-text: #04202c;
-    --sky-accent-soft: #12313d;
-    --sky-ok: #5cc95f;
-    --sky-danger: #ff6b6b;
-    --sky-shadow: 0 0 0 2px #33383d, 0 10px 28px rgba(0, 0, 0, .5);
-    --sky-focus: 0 0 0 3px rgba(52, 190, 237, .55), 0 0 12px rgba(52, 190, 237, .45);
-    --sky-button: linear-gradient(#34383d 0%, #2c3034 55%, #25282c 100%);
-    --sky-button-hover: linear-gradient(#36414a 0%, #2d3942 55%, #27323a 100%);
-    --sky-button-border: #474d54;
-    --sky-primary: linear-gradient(#4cc6ef 0%, #1b96cd 55%, #1182b7 100%);
-    --sky-primary-border: #1590c6;
-    --sky-card: #222529;
-    --sky-card-border: #3a3f45;
+    --bead-text: #e3e8ec;
+    --bead-muted: #98a2ab;
+    --bead-bg: #1a1c1f;
+    --bead-surface: #222529;
+    --bead-sunken: #16181a;
+    --bead-border: #3a3f45;
+    --bead-hover: rgba(52, 190, 237, .1);
+    --bead-selected: rgba(52, 190, 237, .2);
+    --bead-accent: #34beed;
+    --bead-accent-text: #04202c;
+    --bead-accent-soft: #12313d;
+    --bead-ok: #5cc95f;
+    --bead-danger: #ff6b6b;
+    --bead-shadow: 0 0 0 2px #33383d, 0 10px 28px rgba(0, 0, 0, .5);
+    --bead-focus: 0 0 0 3px rgba(52, 190, 237, .55), 0 0 12px rgba(52, 190, 237, .45);
+    --bead-button: linear-gradient(#34383d 0%, #2c3034 55%, #25282c 100%);
+    --bead-button-hover: linear-gradient(#36414a 0%, #2d3942 55%, #27323a 100%);
+    --bead-button-border: #474d54;
+    --bead-primary: linear-gradient(#4cc6ef 0%, #1b96cd 55%, #1182b7 100%);
+    --bead-primary-border: #1590c6;
+    --bead-card: #222529;
+    --bead-card-border: #3a3f45;
     --win-frame: #26292d;
     --win-frame-inactive: #212327;
     --win-border: #3d4248;
@@ -156,7 +156,7 @@
 }
 
 /*
- * From here on, ordinary CSS on Skypane's own classes: .btn, .icon-btn, .segmented, .switch (ui.css, in every
+ * From here on, ordinary CSS on Rainbead's own classes: .btn, .icon-btn, .segmented, .switch (ui.css, in every
  * window) and .win, .taskbar, .task, .start-button, .desktop-icon, .dock (shell.css, the desktop). Keep to
  * looks — colours, borders, roundness, shadows — and leave sizes and positions as they are: phones depend on them.
  */
@@ -165,7 +165,7 @@
 .btn:active, .icon-btn:active, .task:active, .desktop-icon:active { transform: scale(.96); }
 
 /* pill buttons, white, a thick soft rim; the main one blue with a shine on top */
-.btn { border-radius: 999px; padding-inline: 18px; border-width: 2px; font-weight: 700; color: var(--sky-text); box-shadow: inset 0 1px 0 #fff, 0 1px 2px rgba(60, 70, 80, .12); }
+.btn { border-radius: 999px; padding-inline: 18px; border-width: 2px; font-weight: 700; color: var(--bead-text); box-shadow: inset 0 1px 0 #fff, 0 1px 2px rgba(60, 70, 80, .12); }
 .btn:hover { border-color: #5fd2f7; box-shadow: 0 0 0 3px rgba(52, 190, 237, .22), 0 0 10px rgba(52, 190, 237, .35); }
 .btn.is-primary { color: #fff; text-shadow: 0 -1px 0 rgba(0, 90, 130, .35); box-shadow: inset 0 2px 0 rgba(255, 255, 255, .45), 0 2px 6px rgba(26, 159, 214, .35); }
 .btn.is-primary:hover { box-shadow: inset 0 2px 0 rgba(255, 255, 255, .45), 0 0 0 3px rgba(52, 190, 237, .3), 0 0 14px rgba(52, 190, 237, .55); }

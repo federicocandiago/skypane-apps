@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  mines.sky — "Loose Mine": find the mines hidden under a meadow, as a .sky app.
+  mines.bead — "Loose Mine": find the mines hidden under a meadow, as a .bead app.
   Three levels, a safe first click, flags (right click, long press or the flag mode on phones), chords on the
   numbers, best times per level with your name, a game saved as you play.
 -->
-<sky-app id="net.skypane.mines" version="1.1.0" author="Skypane">
+<bead-app id="net.rainbead.mines" version="1.1.0" author="Rainbead">
 
   <translations>
     <lang code="en" default="true"><![CDATA[{
@@ -63,7 +63,7 @@
 
   <window width="560" height="600"/>
 
-  <!-- ☰ in Skypane's bar: the first menu is its first level, «Level ›» a second level with ✓ on the one in play -->
+  <!-- ☰ in Rainbead's bar: the first menu is its first level, «Level ›» a second level with ✓ on the one in play -->
   <menu>
     <menu label="game">
       <item label="new" action="new" shortcut="F2" icon="play"/>
@@ -79,12 +79,12 @@
 
   <style><![CDATA[
     body { display: flex; flex-direction: column; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
-    #top { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--sky-surface); border-bottom: 1px solid var(--sky-border); }
+    #top { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--bead-surface); border-bottom: 1px solid var(--bead-border); }
     .lcd { min-width: 3.4em; padding: 2px 8px; font: 700 20px/1.2 ui-monospace, Menlo, Consolas, monospace; color: #ff5252; background: #1b0707; border-radius: 5px; text-align: right; box-shadow: inset 0 1px 3px rgba(0,0,0,.6); }
     #face { font-size: 24px; line-height: 1; padding: 4px 10px; }
     #flag-mode[aria-pressed="true"] { color: #fff; background: linear-gradient(#ff7961, #d32f2f); border-color: #b71c1c; }
     #top .spacer { flex: 1; }
-    #level { font-size: 12.5px; color: var(--sky-muted); }
+    #level { font-size: 12.5px; color: var(--bead-muted); }
     #field-wrap { position: relative; flex: 1; overflow: auto; display: grid; place-items: center; padding: 12px;
                   background: radial-gradient(ellipse at 50% 20%, #c8f0a8, #7fc35a 70%); }
     [data-scheme="dark"] #field-wrap { background: radial-gradient(ellipse at 50% 20%, #2f5a24, #16300f 70%); }
@@ -112,7 +112,7 @@
     .times { display: grid; gap: 10px; }
     .times h3 { margin: 0; font-size: 13px; }
     .times ol { margin: 2px 0 0; padding-left: 20px; font-size: 13px; }
-    .times li.is-new { font-weight: 700; color: var(--sky-accent); }
+    .times li.is-new { font-weight: 700; color: var(--bead-accent); }
   ]]></style>
 
   <body><![CDATA[
@@ -146,7 +146,7 @@
 
     function newGame(lv = level) {
       level = lv;
-      Object.keys(LEVELS).forEach((name) => sky.ui.state(name, { checked: name === level })); // ✓ in ☰ › Level
+      Object.keys(LEVELS).forEach((name) => bead.ui.state(name, { checked: name === level })); // ✓ in ☰ › Level
       const [w, h, mines] = LEVELS[level];
       game = { level, w, h, mines, cells: Array.from({ length: w * h }, () => ({ mine: false, open: false, flag: false, n: 0 })), started: false, over: false, won: false, seconds: 0 };
       document.querySelector('.modal')?.remove();
@@ -259,9 +259,9 @@
       const left = game.mines - game.cells.filter((c) => c.flag).length;
       document.getElementById('left').textContent = String(Math.max(-99, left)).padStart(3, '0');
       document.getElementById('clock').textContent = String(Math.min(999, game.seconds)).padStart(3, '0');
-      document.getElementById('level').textContent = sky.t('level' + level[0].toUpperCase() + level.slice(1));
+      document.getElementById('level').textContent = bead.t('level' + level[0].toUpperCase() + level.slice(1));
       face.textContent = game.won ? '😎' : game.over ? '😵' : '🙂';
-      flagButton.title = sky.t('flagMode');
+      flagButton.title = bead.t('flagMode');
       flagButton.setAttribute('aria-pressed', String(flagMode));
     }
 
@@ -307,15 +307,15 @@
 
     function askName() {
       return new Promise((resolve) => modal((box, close) => {
-        box.append(el('h2', '', sky.t('won')), el('p', 'muted', sky.t('wonIn', { level: sky.t('level' + level[0].toUpperCase() + level.slice(1)), t: format(game.seconds) })));
+        box.append(el('h2', '', bead.t('won')), el('p', 'muted', bead.t('wonIn', { level: bead.t('level' + level[0].toUpperCase() + level.slice(1)), t: format(game.seconds) })));
         const label = el('label', 'field');
         const input = el('input');
         input.maxLength = 30;
         input.value = lastName;
-        label.append(el('span', '', sky.t('yourName')), input);
+        label.append(el('span', '', bead.t('yourName')), input);
         const btns = el('div', 'row-btns');
-        const skip = el('button', 'btn', sky.t('skip'));
-        const ok = el('button', 'btn is-primary', sky.t('save'));
+        const skip = el('button', 'btn', bead.t('skip'));
+        const ok = el('button', 'btn is-primary', bead.t('save'));
         btns.append(skip, ok);
         box.append(label, btns);
         const done = (v) => { close(); resolve(v); };
@@ -328,12 +328,12 @@
 
     function showTimes(fresh = null) {
       modal((box, close) => {
-        box.append(el('h2', '', sky.t('scores')));
+        box.append(el('h2', '', bead.t('scores')));
         const list = el('div', 'times');
         Object.keys(LEVELS).forEach((lv) => {
           const part = el('div');
-          part.append(el('h3', '', sky.t('level' + lv[0].toUpperCase() + lv.slice(1))));
-          if (!times[lv].length) part.append(el('p', 'muted', sky.t('nobody')));
+          part.append(el('h3', '', bead.t('level' + lv[0].toUpperCase() + lv.slice(1))));
+          if (!times[lv].length) part.append(el('p', 'muted', bead.t('nobody')));
           else {
             const ol = el('ol');
             times[lv].slice(0, 5).forEach((t) => ol.append(el('li', t === fresh ? 'is-new' : '', `${t.name} — ${format(t.seconds)}`)));
@@ -342,8 +342,8 @@
           list.append(part);
         });
         const btns = el('div', 'row-btns');
-        const again = el('button', 'btn', sky.t('again'));
-        const shut = el('button', 'btn is-primary', sky.t('close'));
+        const again = el('button', 'btn', bead.t('again'));
+        const shut = el('button', 'btn is-primary', bead.t('close'));
         again.onclick = () => { close(); newGame(); };
         shut.onclick = close;
         btns.append(again, shut);
@@ -376,22 +376,22 @@
     let saving = null;
     function save() {
       clearTimeout(saving);
-      saving = setTimeout(() => sky.data.set({ game, level, times, lastName }, { force: true }).catch(() => {}), 400);
+      saving = setTimeout(() => bead.data.set({ game, level, times, lastName }, { force: true }).catch(() => {}), 400);
     }
 
-    sky.on('menu', (action) => {
+    bead.on('menu', (action) => {
       if (action === 'new') newGame();
       if (LEVELS[action]) newGame(action);
       if (action === 'scores') showTimes();
     });
     addEventListener('resize', () => game && render());
 
-    sky.data.get().then((saved) => {
+    bead.data.get().then((saved) => {
       times = { ...times, ...(saved?.times || {}) };
       lastName = saved?.lastName || '';
       level = LEVELS[saved?.level] ? saved.level : 'beginner';
-      if (saved?.game && !saved.game.over && saved.game.started && !sky.launch.action) { game = saved.game; render(); } else newGame(level);
+      if (saved?.game && !saved.game.over && saved.game.started && !bead.launch.action) { game = saved.game; render(); } else newGame(level);
     });
     })();
   ]]></script>
-</sky-app>
+</bead-app>

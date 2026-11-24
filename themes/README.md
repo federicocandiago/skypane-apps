@@ -1,6 +1,6 @@
-# Making a Skypane theme
+# Making a Rainbead theme
 
-A theme changes how all of Skypane looks: the desktop, its bar and icons, the frames of the windows, what is inside
+A theme changes how all of Rainbead looks: the desktop, its bar and icons, the frames of the windows, what is inside
 every window, the widgets. It is **a folder** with a `manifest.json` and a `theme.css` (plus its fonts and pictures,
 if any), installed by the administrator. [`universe/`](universe/) is a complete theme, commented line by line: start
 from a copy of it.
@@ -10,9 +10,9 @@ This guide is complete: a theme written by following it, part by part, works the
 ## What a theme can and cannot do
 
 - **It can**
-  - set the colours, shapes, fonts and shadows of everything through variables (`--sky-*`, `--win-*`, `--taskbar-*`,
+  - set the colours, shapes, fonts and shadows of everything through variables (`--bead-*`, `--win-*`, `--taskbar-*`,
     `--widget-*`), separately for light and dark;
-  - restyle Skypane's pieces with ordinary CSS (buttons, windows, the bar, the desktop icons, the Dock…);
+  - restyle Rainbead's pieces with ordinary CSS (buttons, windows, the bar, the desktop icons, the Dock…);
   - bring its own fonts (`.woff2`) and pictures (`.svg`, `.png`, `.webp`, `.jpg`), next to `theme.css`;
   - offer wallpapers, drawn in CSS.
 - **It cannot**
@@ -61,40 +61,40 @@ universe/
 
 ## theme.css
 
-Skypane loads its own `ui.css` (every page) and `shell.css` (the desktop) first, then `theme.css`: what the theme
+Rainbead loads its own `ui.css` (every page) and `shell.css` (the desktop) first, then `theme.css`: what the theme
 says wins. The file has three parts, in this order.
 
 ### 1. The variables, for light and for dark
 
-`sky.js` puts `data-scheme="light"` or `data-scheme="dark"` on `<html>`, from the user's choice or the system's. A
+`bead.js` puts `data-scheme="light"` or `data-scheme="dark"` on `<html>`, from the user's choice or the system's. A
 theme sets its two palettes there; what is the same in both (font, roundness) goes in `:root`.
 
 ```css
-:root { --sky-font: "Skypane Rounded", ui-rounded, system-ui, sans-serif; --sky-radius: 14px; }
-[data-scheme="light"] { --sky-text: #4a5259; --sky-bg: #f4f5f6; --sky-accent: #1a9fd6; color-scheme: light; … }
-[data-scheme="dark"]  { --sky-text: #e3e8ec; --sky-bg: #1a1c1f; --sky-accent: #34beed; color-scheme: dark; … }
+:root { --bead-font: "Rainbead Rounded", ui-rounded, system-ui, sans-serif; --bead-radius: 14px; }
+[data-scheme="light"] { --bead-text: #4a5259; --bead-bg: #f4f5f6; --bead-accent: #1a9fd6; color-scheme: light; … }
+[data-scheme="dark"]  { --bead-text: #e3e8ec; --bead-bg: #1a1c1f; --bead-accent: #34beed; color-scheme: dark; … }
 ```
 
 Always end each palette with `color-scheme: light` or `dark`: form fields, scrollbars and the widgets' frames
 follow it.
 
-**Inside every window** (`--sky-*`):
+**Inside every window** (`--bead-*`):
 
 | Variable | What it colours |
 |---|---|
-| `--sky-font`, `--sky-mono` | The text; code and numbers in columns. |
-| `--sky-text`, `--sky-muted` | Text; secondary text (hints, dates). |
-| `--sky-bg`, `--sky-surface`, `--sky-sunken` | The page; panels, cards and fields; sidebars and troughs. |
-| `--sky-border` | Lines and borders. |
-| `--sky-hover`, `--sky-selected` | Under the pointer; what is chosen (rows, list items). |
-| `--sky-accent`, `--sky-accent-text`, `--sky-accent-soft` | The theme's colour: links, marks, switches; text on it; a pale version of it. |
-| `--sky-ok`, `--sky-danger` | Done and well; delete and errors. |
-| `--sky-radius`, `--sky-radius-small` | Roundness of panels; of buttons and fields. |
-| `--sky-shadow`, `--sky-focus` | Shadow of menus and dialogs; the ring around what has the keyboard's focus. |
-| `--sky-button`, `--sky-button-hover`, `--sky-button-border` | Ordinary buttons (a colour or a gradient). |
-| `--sky-primary`, `--sky-primary-border` | The main button (Save, OK) and the chosen part of a group of buttons. |
-| `--sky-card`, `--sky-card-border` | Translucent cards on the sign-in page. |
-| `--sky-blur` | How much glass blurs what is behind (`0px`: no glass). |
+| `--bead-font`, `--bead-mono` | The text; code and numbers in columns. |
+| `--bead-text`, `--bead-muted` | Text; secondary text (hints, dates). |
+| `--bead-bg`, `--bead-surface`, `--bead-sunken` | The page; panels, cards and fields; sidebars and troughs. |
+| `--bead-border` | Lines and borders. |
+| `--bead-hover`, `--bead-selected` | Under the pointer; what is chosen (rows, list items). |
+| `--bead-accent`, `--bead-accent-text`, `--bead-accent-soft` | The theme's colour: links, marks, switches; text on it; a pale version of it. |
+| `--bead-ok`, `--bead-danger` | Done and well; delete and errors. |
+| `--bead-radius`, `--bead-radius-small` | Roundness of panels; of buttons and fields. |
+| `--bead-shadow`, `--bead-focus` | Shadow of menus and dialogs; the ring around what has the keyboard's focus. |
+| `--bead-button`, `--bead-button-hover`, `--bead-button-border` | Ordinary buttons (a colour or a gradient). |
+| `--bead-primary`, `--bead-primary-border` | The main button (Save, OK) and the chosen part of a group of buttons. |
+| `--bead-card`, `--bead-card-border` | Translucent cards on the sign-in page. |
+| `--bead-blur` | How much glass blurs what is behind (`0px`: no glass). |
 
 **The windows' frames** (`--win-*`):
 
@@ -132,7 +132,7 @@ A theme may also add **variables of its own** (Universe has `--tile-bg` and `--t
 
 ### 2. Restyling the pieces
 
-Where variables are not enough, ordinary CSS on Skypane's classes:
+Where variables are not enough, ordinary CSS on Rainbead's classes:
 
 - in every window (`ui.css`): `.btn` (`.is-primary`, `.is-danger`, `.is-ghost`), `.icon-btn`, `.segmented`, `.switch`,
   `.check`, `.toolbar`, `.field`, `.box`, `.meter`, `input`, `select`, `textarea`, `h1`–`h3`;
@@ -159,7 +159,7 @@ sharp on every screen). `[data-scheme="dark"] .wp-{id}` gives the night version 
 Put them next to `theme.css` and name them without a path:
 
 ```css
-@font-face { font-family: "Skypane Rounded"; src: url("nunito.woff2") format("woff2"); font-weight: 400 800; font-display: swap; }
+@font-face { font-family: "Rainbead Rounded"; src: url("nunito.woff2") format("woff2"); font-weight: 400 800; font-display: swap; }
 ```
 
 Only `.woff2` fonts and `.svg`, `.png`, `.webp`, `.jpg` pictures are served. Keep them small: subset a font to the
@@ -169,8 +169,8 @@ licence.
 ## Install and update
 
 1. Zip the folder: the archive holds `universe/manifest.json`, `universe/theme.css`… (or the files themselves,
-   with an `"id"` in the manifest). From a copy of Skypane: `php bin/pack.php path/to/universe`.
-2. In Skypane, **Administration › Themes › Upload**: it appears turned off. Turn it on, then choose it in
+   with an `"id"` in the manifest). From a copy of Rainbead: `php bin/pack.php path/to/universe`.
+2. In Rainbead, **Administration › Themes › Upload**: it appears turned off. Turn it on, then choose it in
    **Settings › Appearance › Theme**.
 3. To update it, upload a higher `version`: the users who chose it keep it.
 
@@ -178,12 +178,12 @@ licence.
 
 1. `manifest.json` has `name`, `description`, `version` (`x.y.z`), `modes` and `"type": "theme"`.
 2. Each mode of `modes` has its `[data-scheme="…"]` block, ending with `color-scheme`.
-3. Text is readable on its backgrounds in both modes: `--sky-text` on `--sky-bg` and `--sky-surface`, `--sky-accent-text`
-   on `--sky-primary`, `--taskbar-text` on `--taskbar-bg`, `--icon-label` on every wallpaper, `--widget-text` on
+3. Text is readable on its backgrounds in both modes: `--bead-text` on `--bead-bg` and `--bead-surface`, `--bead-accent-text`
+   on `--bead-primary`, `--taskbar-text` on `--taskbar-bg`, `--icon-label` on every wallpaper, `--widget-text` on
    `--widget-bg`.
 4. Every wallpaper of the manifest has its `.wp-{id}`, for light and (if it differs) for dark.
 5. Fonts and pictures are next to `theme.css`, named without a path, with their licence; nothing comes from
    other sites.
 6. The texts of the manifest are translated in `lang/{locale}.po`, at least `it` if you can.
-7. Only looks are restyled: sizes and positions stay Skypane's.
+7. Only looks are restyled: sizes and positions stay Rainbead's.
 8. To update: same folder name (or `id`), higher `version`.
