@@ -1,7 +1,7 @@
 {
     "name": "Universe",
     "description": "White and silver, soft grey stripes, sky-blue light and round, friendly buttons that click: the playful home screens of the late 2000s. At night, the same in charcoal.",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "modes": [
         "light",
         "dark"

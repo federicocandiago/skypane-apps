@@ -246,7 +246,7 @@ body.layout-mac .dock { border: 2px solid var(--tile-border); border-radius: 22p
 .wp-orbit { background: url(wall-light.svg) center / cover no-repeat; }
 [data-scheme="dark"] .wp-orbit { background-image: url(wall-dark.svg); }
 
-/* lighter glass and thinner borders */
+/* lighter glass, thinner borders, windows in one piece */
 /* Universe, proposal: lighter white and silver — glass tiles instead of cardboard, a cleaner silver bar, sky-blue light */
 :root { --win-radius: 16px; }
 [data-scheme="light"] {
@@ -276,3 +276,18 @@ body.layout-top .taskbar { border-bottom-width: 1.5px; }
 body.layout-mac .dock { border-width: 1.5px; }
 .start-button::before { border-width: 1.5px; }
 .start-menu, .notify-panel, .clock-panel { border-width: 1.5px !important; }
+/* the tiles fit what they hold (no belly under the name), their shadow centred */
+.desktop-icon { height: auto !important; padding: 10px 6px 9px !important; gap: 6px !important;
+    box-shadow: 0 2px 10px -2px rgba(40, 70, 110, .2), inset 0 1px 0 #fff !important; }
+[data-scheme="dark"] .desktop-icon { box-shadow: 0 2px 10px -2px rgba(0, 0, 0, .5) !important; }
+.desktop-icon span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* the window is one piece: the title on a silver band, one fine line, then the content to the edges */
+:root { --win-pad: 0px; }
+[data-scheme="light"] { --win-frame: #ffffff; --win-frame-inactive: #fbfcfd; }
+[data-scheme="dark"] { --win-frame: #1d2128; --win-frame-inactive: #1b1f25; }
+.win { overflow: hidden; }
+.win-title { height: 42px; padding: 0 8px 0 14px; background: linear-gradient(#ffffff, #f0f3f6); border-bottom: 1px solid rgba(120, 135, 155, .22); }
+.win.is-inactive .win-title { background: linear-gradient(#fdfdfe, #f5f7f9); }
+[data-scheme="dark"] .win-title { background: linear-gradient(#2b313a, #232830); border-bottom-color: rgba(160, 175, 195, .16); }
+[data-scheme="dark"] .win.is-inactive .win-title { background: #20252c; }
+.win-body { border: 0 !important; border-radius: 0 !important; }
