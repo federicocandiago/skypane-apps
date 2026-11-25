@@ -12,7 +12,7 @@
  *   1. sets the variables (--bead-*, --win-*, --taskbar-*, --widget-*…) for light and for dark: that alone
  *      already gives a complete theme;
  *   2. restyles a few pieces where variables are not enough (buttons, windows, the bar, the icons);
- *   3. draws its wallpapers, in CSS only (.wp-{id}, the ids listed in manifest.json).
+ *   3. shows its wallpaper: an illustration next to this file (wall-light.svg, wall-dark.svg) as .wp-{id}.
  */
 
 /*
@@ -235,67 +235,44 @@ body.layout-mac .dock { border: 2px solid var(--tile-border); border-radius: 22p
  */
 /* ── Wallpapers ─────────────────────────────────────────────────────── */
 /* the home of channels: pale silver, thin horizontal lines, a soft light in the middle */
-.wp-channels {
-    background:
-        repeating-linear-gradient(0deg, rgba(150, 156, 162, .13) 0 2px, transparent 2px 6px),
-        radial-gradient(ellipse 70% 50% at 50% 40%, #ffffff, transparent 70%),
-        linear-gradient(#f2f3f4, #dcdfe2);
-}
 /* the plaza: sky, soft round clouds and light */
-.wp-plaza {
-    background:
-        radial-gradient(circle at 18% 72%, rgba(255, 255, 255, .9) 0 7%, transparent 7.5%),
-        radial-gradient(circle at 26% 70%, rgba(255, 255, 255, .9) 0 9%, transparent 9.5%),
-        radial-gradient(circle at 76% 32%, rgba(255, 255, 255, .85) 0 6%, transparent 6.5%),
-        radial-gradient(circle at 83% 30%, rgba(255, 255, 255, .85) 0 8%, transparent 8.5%),
-        radial-gradient(ellipse 120% 40% at 50% 112%, #a8e27a 0 60%, transparent 61%),
-        linear-gradient(#5cc8f2, #b7e9fb 60%, #e9f8fe);
-}
 /* orbit: rings of light around a blue planet, on silver */
-.wp-orbit {
-    background:
-        radial-gradient(circle at 62% 46%, transparent 0 21%, rgba(52, 190, 237, .35) 21.3%, transparent 21.8%),
-        radial-gradient(circle at 62% 46%, transparent 0 31%, rgba(52, 190, 237, .2) 31.3%, transparent 31.8%),
-        radial-gradient(circle at 62% 46%, transparent 0 42%, rgba(120, 140, 160, .15) 42.3%, transparent 42.8%),
-        radial-gradient(circle at 62% 46%, #b8ecfd 0, #34beed 9%, #1a8cc4 13%, transparent 13.5%),
-        repeating-linear-gradient(0deg, rgba(120, 140, 160, .05) 0 1px, transparent 1px 5px),
-        linear-gradient(160deg, #ffffff, #e4e9ed);
-}
 /* stripes: white and pale grey bands, a blue one */
-.wp-stripes {
-    background:
-        linear-gradient(transparent 78%, rgba(52, 190, 237, .55) 78%, rgba(52, 190, 237, .55) 80%, transparent 80%),
-        repeating-linear-gradient(0deg, #f6f8f9 0 26px, #edf1f3 26px 52px);
-}
-[data-scheme="dark"] .wp-channels {
-    background:
-        repeating-linear-gradient(0deg, rgba(255, 255, 255, .03) 0 1px, transparent 1px 5px),
-        radial-gradient(ellipse 70% 50% at 50% 40%, #2c3238, transparent 70%),
-        linear-gradient(#1d2126, #111316);
-}
-[data-scheme="dark"] .wp-plaza {
-    background:
-        radial-gradient(circle at 20% 22%, rgba(255, 255, 255, .7) 0 .25%, transparent .4%),
-        radial-gradient(circle at 44% 12%, rgba(255, 255, 255, .6) 0 .2%, transparent .35%),
-        radial-gradient(circle at 70% 26%, rgba(255, 255, 255, .7) 0 .25%, transparent .4%),
-        radial-gradient(circle at 86% 14%, rgba(255, 255, 255, .5) 0 .2%, transparent .35%),
-        radial-gradient(circle at 78% 30%, #f4f9ff 0 4%, transparent 4.5%),
-        radial-gradient(ellipse 120% 40% at 50% 112%, #1d3a2a 0 60%, transparent 61%),
-        linear-gradient(#0b1726, #173452 60%, #23527a);
-}
-[data-scheme="dark"] .wp-orbit {
-    background:
-        radial-gradient(circle at 62% 46%, transparent 0 21%, rgba(52, 190, 237, .4) 21.3%, transparent 21.8%),
-        radial-gradient(circle at 62% 46%, transparent 0 31%, rgba(52, 190, 237, .22) 31.3%, transparent 31.8%),
-        radial-gradient(circle at 62% 46%, transparent 0 42%, rgba(255, 255, 255, .08) 42.3%, transparent 42.8%),
-        radial-gradient(circle at 62% 46%, #b8ecfd 0, #34beed 9%, #136b98 13%, transparent 13.5%),
-        linear-gradient(160deg, #22272d, #101215);
-}
-[data-scheme="dark"] .wp-stripes {
-    background:
-        linear-gradient(transparent 78%, rgba(52, 190, 237, .5) 78%, rgba(52, 190, 237, .5) 80%, transparent 80%),
-        repeating-linear-gradient(0deg, #1c2025 0 26px, #181b1f 26px 52px);
-}
 
 /* Delete: a soft red pill, never a shout. */
 .btn.is-danger { color: #fff; background: linear-gradient(#ff8a8a, #e5484d); border-color: #d23b40; text-shadow: 0 -1px 0 rgba(120, 0, 10, .3); }
+
+/* ── 3. The wallpaper: an illustration (SVG), with its own night ─────────────────────────────── */
+.wp-orbit { background: url(wall-light.svg) center / cover no-repeat; }
+[data-scheme="dark"] .wp-orbit { background-image: url(wall-dark.svg); }
+
+/* lighter glass and thinner borders */
+/* Universe, proposal: lighter white and silver — glass tiles instead of cardboard, a cleaner silver bar, sky-blue light */
+:root { --win-radius: 16px; }
+[data-scheme="light"] {
+    --win-frame: linear-gradient(#ffffff 0, #f1f4f7 40px, #ffffff 40px); --win-frame-inactive: linear-gradient(#fbfcfd 0, #f3f5f8 40px, #fbfcfd 40px);
+    --win-border: rgba(120, 135, 155, .28); --win-gloss: none; --win-shadow: 0 24px 56px -14px rgba(40, 70, 110, .3), 0 4px 12px -4px rgba(40, 70, 110, .12);
+    --taskbar-bg: rgba(255, 255, 255, .72);
+}
+[data-scheme="dark"] {
+    --win-frame: linear-gradient(#2a3039 0, #232830 40px, #1d2128 40px); --win-frame-inactive: linear-gradient(#242931 0, #1f242b 40px, #1b1f25 40px);
+    --win-border: rgba(160, 175, 195, .18); --win-gloss: none; --win-shadow: 0 24px 60px -10px rgba(0, 0, 0, .6);
+}
+.win::before { display: none; }
+.win { box-shadow: var(--win-shadow), inset 0 1px 0 rgba(255, 255, 255, .9) !important; }
+[data-scheme="dark"] .win { box-shadow: var(--win-shadow), inset 0 1px 0 rgba(255, 255, 255, .08) !important; }
+.win-title { height: 40px; }
+.win-body { border-color: rgba(120, 135, 155, .18); border-radius: 10px; }
+.desktop-icon { background: rgba(255, 255, 255, .42) !important; border: 1px solid rgba(255, 255, 255, .75) !important; border-radius: 20px !important;
+    box-shadow: 0 6px 18px -8px rgba(40, 70, 110, .35), inset 0 1px 0 #fff !important; backdrop-filter: blur(10px) saturate(1.4); -webkit-backdrop-filter: blur(10px) saturate(1.4); }
+[data-scheme="dark"] .desktop-icon { background: rgba(40, 46, 56, .5) !important; border-color: rgba(255, 255, 255, .1) !important; box-shadow: 0 6px 18px -8px rgba(0, 0, 0, .6) !important; }
+.taskbar { box-shadow: 0 -1px 0 rgba(120, 135, 155, .2); }
+
+/* the grey borders a little thinner */
+.btn, .segmented, .task, .win-buttons button { border-width: 1.5px; }
+.win { border-width: 1.5px; }
+.taskbar { border-top-width: 1.5px; }
+body.layout-top .taskbar { border-bottom-width: 1.5px; }
+body.layout-mac .dock { border-width: 1.5px; }
+.start-button::before { border-width: 1.5px; }
+.start-menu, .notify-panel, .clock-panel { border-width: 1.5px !important; }

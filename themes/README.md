@@ -14,7 +14,7 @@ This guide is complete: a theme written by following it, part by part, works the
     `--widget-*`), separately for light and dark;
   - restyle Rainbead's pieces with ordinary CSS (buttons, windows, the bar, the desktop icons, the Dock…);
   - bring its own fonts (`.woff2`) and pictures (`.svg`, `.png`, `.webp`, `.jpg`), next to `theme.css`;
-  - offer wallpapers, drawn in CSS.
+  - offer wallpapers: drawn in CSS, or pictures of its own (an SVG keeps them sharp on every screen).
 - **It cannot**
   - run JavaScript (a theme is only CSS);
   - load anything from other sites: no Google Fonts, no CDN, no remote pictures (the page refuses them);
@@ -40,7 +40,7 @@ universe/
     "version": "1.0.0",
     "modes": ["light", "dark"],
     "preview": "linear-gradient(160deg, #ffffff, #e9eef2 55%, #34beed 55.5%, #8fdcf7)",
-    "wallpapers": { "channels": "Channels", "plaza": "Plaza", "orbit": "Orbit", "stripes": "Stripes" },
+    "wallpapers": { "orbit": "Orbit" },
     "type": "theme"
 }
 ```
@@ -146,12 +146,13 @@ small windows depend on them. Write light and dark apart when they differ: `[dat
 
 ### 3. The wallpapers
 
-One class per wallpaper of the manifest, `.wp-{id}`, drawn with gradients only (no pictures needed, and they look
-sharp on every screen). `[data-scheme="dark"] .wp-{id}` gives the night version of the same wallpaper.
+One class per wallpaper of the manifest, `.wp-{id}`. It can be drawn with gradients, or be a picture next to
+`theme.css` (an SVG stays sharp on every screen and weighs little). `[data-scheme="dark"] .wp-{id}` gives the night
+version of the same wallpaper. Universe uses two illustrations:
 
 ```css
-.wp-channels { background: repeating-linear-gradient(0deg, rgba(150, 156, 162, .13) 0 2px, transparent 2px 6px), linear-gradient(#f2f3f4, #dcdfe2); }
-[data-scheme="dark"] .wp-channels { background: linear-gradient(#1d2126, #111316); }
+.wp-orbit { background: url(wall-light.svg) center / cover no-repeat; }
+[data-scheme="dark"] .wp-orbit { background-image: url(wall-dark.svg); }
 ```
 
 ### Fonts and pictures
