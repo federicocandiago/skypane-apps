@@ -21,3 +21,6 @@ msgstr "Orbita"
 
 msgid "Stripes"
 msgstr "Righe"
+
+msgid "Silver orbits"
+msgstr "Orbite d'argento"

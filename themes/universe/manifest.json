@@ -1,14 +1,18 @@
 {
     "name": "Universe",
     "description": "White and silver, soft grey stripes, sky-blue light and round, friendly buttons that click: the playful home screens of the late 2000s. At night, the same in charcoal.",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "modes": [
         "light",
         "dark"
     ],
     "preview": "linear-gradient(160deg, #ffffff, #e9eef2 55%, #34beed 55.5%, #8fdcf7)",
     "wallpapers": {
-        "orbit": "Orbit"
+        "silver": "Silver orbits",
+        "channels": "Channels",
+        "plaza": "Plaza",
+        "orbit": "Orbit",
+        "stripes": "Stripes"
     },
     "type": "theme"
 }

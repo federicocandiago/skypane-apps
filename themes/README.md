@@ -40,7 +40,7 @@ universe/
     "version": "1.0.0",
     "modes": ["light", "dark"],
     "preview": "linear-gradient(160deg, #ffffff, #e9eef2 55%, #34beed 55.5%, #8fdcf7)",
-    "wallpapers": { "orbit": "Orbit" },
+    "wallpapers": { "silver": "Silver orbits", "channels": "Channels", "plaza": "Plaza", "orbit": "Orbit", "stripes": "Stripes" },
     "type": "theme"
 }
 ```
@@ -148,11 +148,11 @@ small windows depend on them. Write light and dark apart when they differ: `[dat
 
 One class per wallpaper of the manifest, `.wp-{id}`. It can be drawn with gradients, or be a picture next to
 `theme.css` (an SVG stays sharp on every screen and weighs little). `[data-scheme="dark"] .wp-{id}` gives the night
-version of the same wallpaper. Universe uses two illustrations:
+version of the same wallpaper. Universe has four drawn in CSS and one illustration:
 
 ```css
-.wp-orbit { background: url(wall-light.svg) center / cover no-repeat; }
-[data-scheme="dark"] .wp-orbit { background-image: url(wall-dark.svg); }
+.wp-silver { background: url(wall-light.svg) center / cover no-repeat; }
+[data-scheme="dark"] .wp-silver { background-image: url(wall-dark.svg); }
 ```
 
 ### Fonts and pictures
