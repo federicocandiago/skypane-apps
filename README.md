@@ -8,6 +8,7 @@ install in a few seconds, each theme a folder — and an example to learn from.
 | 🃏 | [`games/solitaire.bead`](games/solitaire.bead) | **Solitaire** (Klondike): drag or tap, undo, draw one or three, finishes by itself when every card is face up, best scores by time and by moves |
 | 💣 | [`games/mines.bead`](games/mines.bead) | **Loose Mine** («Mina Vagante»): find the mines under the meadow — three levels, a safe first square, flags by right click or long press, best times per level |
 | 🎨 | [`apps/paint.bead`](apps/paint.bead) | **Paint** («Disegno»): pencil, brush, eraser, lines, rectangles, ellipses, fill and colour picker, with undo; opens your pictures and saves them in your files — the example of `bead.files` |
+| 🕓 | [`apps/clock.bead`](apps/clock.bead) | **Clock** («Orologio»): a clock for the desktop, with hands or with digits — a click changes the face, each clock remembers its own. An app made **only of widgets**, and the example of them |
 | 📝 | [`apps/notes.bead`](apps/notes.bead) | **Notes**: a tiny list of notes, and the smallest complete example of the format (menu, shortcuts, an asset, a data migration) |
 
 Every app speaks English and Italian, follows the light and dark themes of the desktop, and works on phones too.
@@ -21,6 +22,7 @@ Every app speaks English and Italian, follows the light and dark themes of the d
 1. Download the `.bead` file (open it on GitHub, then *Download raw file*).
 2. In Rainbead open **Applications › Add an app** and drop the file on *Upload a .bead file*.
 3. It appears on the desktop and in the Start menu. To update it later, upload a newer version: its data are kept.
+   An app made only of widgets (Clock) is not on the desktop: add it with a right click on the desktop › *Add a widget…*.
 
 ## What an app can reach
 
@@ -122,6 +124,7 @@ The app runs in a sandboxed window: a page with no cookies, no network and no ac
   <style><![CDATA[ /* CSS */ ]]></style>
   <body><![CDATA[ <!-- HTML that goes inside <body> --> ]]></body>
   <script><![CDATA[ // JavaScript, run after the body ]]></script>
+  <widget kind="today" label="todayName" description="todayAbout" width="220" height="160"/>
   <asset name="logo.svg" type="image/svg+xml"><![CDATA[<svg …>…</svg>]]></asset>
   <asset name="beep.mp3" type="audio/mpeg" encoding="base64">SUQz…</asset>
   <migrate from="1.0.0"><![CDATA[ (data) => ({ ...data, items: data.items ?? [] }) ]]></migrate>
@@ -135,6 +138,7 @@ The parts, in any order inside `<bead-app>`:
 | `id` | yes | Reverse domain, lowercase letters and digits: `it.mario.pomodoro`. It identifies the app forever: keep it the same in every version. |
 | `version` | yes | `major.minor.patch`, numbers only (`1.0.0`). To update an installed app, upload a **higher** version: its data are kept. The same version is refused. |
 | `author` | no | Shown in the details of the app. |
+| `kind` | no | `app` (the default) or `widget`: an app made only of widgets, not on the desktop nor in the Start menu (see *Widgets*). |
 | `<translations>` | yes | One `<lang code="xx">` per language, each a JSON object of texts. One has `default="true"`: it is used when a text is missing in the user's language. Keys **`name`** and **`description`** are required; **`info`** is the longer text of the details and of the "About" box (`\n` for new lines). Every other key is yours: menu labels, buttons, messages. At least `en`; `it` is welcome. |
 | `<icon>` | yes | One inline **SVG**, square `viewBox` (48×48 works well), up to 64 KB. Colourful, glossy, simple; readable at 24 px. |
 | `<window>` | no | Starting size in pixels: width 240–1600, height 160–1200 (default 640×480). |
@@ -144,6 +148,7 @@ The parts, in any order inside `<bead-app>`:
 | `<style>` | no | CSS for the app. |
 | `<body>` | one of the two | HTML placed in `<body>`. |
 | `<script>` | one of the two | JavaScript placed at the end of `<body>`. A classic script, not a module. |
+| `<widget>` | no | A widget the app offers for the desktop (see *Widgets*): `kind` (lowercase letters, digits, dashes), `label` and `description` (translation keys), `width` 160–480 and `height` 120–480 in pixels, `refresh` in seconds (drawn again that often; 0, the default: never). Up to 6. |
 | `<asset>` | no | A picture, sound or font: `name` (letters, digits, `.`, `-`, `_`), `type` (`image/…`, `audio/…`, `font/…`); SVG as text in CDATA, anything else with `encoding="base64"`. Get it with `bead.asset(name)`. |
 | `<migrate from="x.y.z">` | no | A JavaScript arrow function `(data) => newData`. When this version reads data saved by version `x.y.z` (or a later one older than this), the function changes them to the new shape, once. |
 
@@ -174,6 +179,11 @@ const made = await bead.files.saveAs(blob, { name: 'Drawing.png', types: ['image
 
 bead.on('menu', (action) => { … })          // an item of ☰, a button of the bar or a shortcut was used
 bead.on('theme', (scheme) => { … })         // the user switched light/dark: "light" | "dark"
+bead.on('data', () => { … })                 // another window or widget of the app saved its data: read them again
+
+bead.launch.widget                           // drawing a widget on the desktop: its kind ("today"); null in a window
+const mine = await bead.widget.config.get()  // what this one widget keeps for itself (null the first time)
+await bead.widget.config.set({ city: 'Rome' })  // saves it: a small JSON object, up to 16 KB
 
 await bead.ui.title('Report.txt')           // the title, in the bar and on the window (document.title is not shown)
 await bead.ui.dirty(true)                   // unsaved changes: a dot by the title, closing asks first; false when saved
@@ -291,6 +301,46 @@ async function save() {
   }
 }
 ```
+
+## Widgets
+
+An app can offer **widgets**: small frames on the desktop (a clock, a counter, today's list), each a little view of
+the app. Declare each with `<widget>`; the user adds it from the desktop's right click, **Add a widget…**, moves it
+by its top edge and removes it with its «×».
+
+```xml
+<widget kind="today" label="todayName" description="todayAbout" width="220" height="160"/>
+```
+
+A widget is **the same app**: the same `.bead`, the same `<style>`, `<body>` and `<script>`, in the same sandbox,
+with the same data. It knows it is drawing a widget from `bead.launch.widget` (the `kind`), and shows something
+else then:
+
+```js
+if (bead.launch.widget === 'today') {
+  document.body.classList.add('is-widget');      // its own small layout, in <style>
+  showToday(await bead.data.get());
+  bead.on('data', async () => showToday(await bead.data.get()));  // a window of the app saved: draw again
+} else {
+  startTheApp();
+}
+```
+
+- **The look**: the page is transparent and the desktop draws the theme's glass around it. Write on it with
+  `var(--widget-text)` and `var(--widget-muted)` (already the colour of the page), tiles with `var(--widget-tile)`;
+  keep the top 14 px and the top right corner free: the user drags the widget from there, and its «×» sits there.
+- **Its own settings**: each copy of a widget keeps a small JSON object of its own with `bead.widget.config`
+  (a city, a colour), apart from the app's data, which every window and widget share.
+- **Opening the app**: `bead.ui.open('action')` opens a window of the app with `bead.launch.action`. Toasts and
+  `bead.ui.confirm()` work too. A widget has no menu, no bar, no title and no files: `bead.files.*` is refused.
+- **Phones**: widgets stand two in a row at the bottom, about 160–200 px wide: draw for that too.
+- **Refresh**: a widget that shows time-bound things can ask to be drawn again every `refresh` seconds (60 or more);
+  a clock is better kept by its own `setInterval`.
+- **Only widgets**: `<bead-app … kind="widget">` makes an app of widgets alone: it does not appear on the desktop
+  nor in the Start menu (it is still in **Applications**, and `bead.ui.open()` opens its window, which can be its
+  settings or its help). It still needs a `<body>` or a `<script>`: the widgets are drawn by it.
+
+See [`apps/clock.bead`](apps/clock.bead): a clock that is only a widget, in a few lines.
 
 ## Looking like the rest of the desktop
 
