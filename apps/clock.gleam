@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  clock.bead — a clock for the desktop, and the example of an app made only of widgets (kind="widget").
-  The same page draws the widget (bead.launch.widget is "clock") and the app's window, which only says how to
+  clock.gleam — a clock for the desktop, and the example of an app made only of widgets (kind="widget").
+  The same page draws the widget (gleam.launch.widget is "clock") and the app's window, which only says how to
   add it. A click on the clock turns it from hands to digits and back; each clock on the desktop remembers its own
-  face (bead.widget.config). Read RAINBEAD-APPS.md, «Widgets», for the whole story.
+  face (gleam.widget.config). Read BLUEGLEAM-APPS.md, «Widgets», for the whole story.
 -->
-<bead-app id="net.rainbead.clock" version="1.0.0" author="Rainbead" kind="widget">
+<gleam-app id="net.bluegleam.clock" version="1.0.0" author="Bluegleam" kind="widget">
 
   <translations>
     <lang code="en" default="true"><![CDATA[{
@@ -37,7 +37,7 @@
 
   <style><![CDATA[
     /* the window: two lines on how to add the clock */
-    .how { margin: 0; padding: 24px; display: grid; gap: 12px; place-items: center; height: 100%; box-sizing: border-box; text-align: center; color: var(--bead-muted); }
+    .how { margin: 0; padding: 24px; display: grid; gap: 12px; place-items: center; height: 100%; box-sizing: border-box; text-align: center; color: var(--gleam-muted); }
 
     /*
      * The widget, made of the theme's own parts, with no word about any theme: the dial is one of its buttons
@@ -46,22 +46,22 @@
      * of phosphor in Amber (whose corners are square: a dial takes the theme's roundness, in full).
      */
     .clock { height: 100%; box-sizing: border-box; padding: 16px 10px 8px; display: grid; grid-template-rows: minmax(0, 1fr) auto; justify-items: center; align-items: center; user-select: none; }
-    .clock .btn { cursor: pointer; font-family: var(--bead-font); }
-    .date { margin-top: 5px; font-size: 12px; color: var(--widget-muted); text-shadow: var(--widget-text-shadow); font-family: var(--bead-font); white-space: nowrap; }
+    .clock .btn { cursor: pointer; font-family: var(--gleam-font); }
+    .date { margin-top: 5px; font-size: 12px; color: var(--widget-muted); text-shadow: var(--widget-text-shadow); font-family: var(--gleam-font); white-space: nowrap; }
 
     /* hands: the dial is a button of the theme, round unless the theme is square */
-    .dial.btn { position: relative; height: 100%; max-height: 100%; aspect-ratio: 1; width: auto; min-height: 0; padding: 0; border-radius: calc(var(--bead-radius) * 100); }
+    .dial.btn { position: relative; height: 100%; max-height: 100%; aspect-ratio: 1; width: auto; min-height: 0; padding: 0; border-radius: calc(var(--gleam-radius) * 100); }
     .dial > * { position: absolute; inset: 0; pointer-events: none; }
-    .mark::before { content: ""; position: absolute; left: 50%; top: 5%; width: 1.5px; height: 4%; translate: -50% 0; background: var(--bead-muted); border-radius: 1px; opacity: .7; }
-    .mark.is-hour::before { width: 3px; height: 8%; background: var(--bead-text); opacity: 1; border-radius: var(--bead-radius-small); }
-    .num { inset: auto; width: 2em; text-align: center; font-size: 12px; font-weight: 600; line-height: 1; color: var(--bead-text); }
+    .mark::before { content: ""; position: absolute; left: 50%; top: 5%; width: 1.5px; height: 4%; translate: -50% 0; background: var(--gleam-muted); border-radius: 1px; opacity: .7; }
+    .mark.is-hour::before { width: 3px; height: 8%; background: var(--gleam-text); opacity: 1; border-radius: var(--gleam-radius-small); }
+    .num { inset: auto; width: 2em; text-align: center; font-size: 12px; font-weight: 600; line-height: 1; color: var(--gleam-text); }
     .num.n12 { top: 16%; left: 50%; translate: -50% 0; } .num.n6 { bottom: 16%; left: 50%; translate: -50% 0; }
     .num.n3 { right: 13%; top: 50%; translate: 0 -50%; } .num.n9 { left: 13%; top: 50%; translate: 0 -50%; }
-    .hand::before { content: ""; position: absolute; left: 50%; bottom: 50%; translate: -50% 0; background: var(--bead-text); border-radius: var(--bead-radius-small); }
+    .hand::before { content: ""; position: absolute; left: 50%; bottom: 50%; translate: -50% 0; background: var(--gleam-text); border-radius: var(--gleam-radius-small); }
     .hand.h::before { width: 5px; height: 26%; }
     .hand.m::before { width: 3.5px; height: 37%; }
-    .hand.s::before { width: 1.5px; height: 42%; bottom: 42%; background: var(--bead-accent); }
-    .cap.btn { inset: auto; left: 50%; top: 50%; width: 13%; height: 13%; min-height: 0; padding: 0; translate: -50% -50%; border-radius: calc(var(--bead-radius) * 100); }
+    .hand.s::before { width: 1.5px; height: 42%; bottom: 42%; background: var(--gleam-accent); }
+    .cap.btn { inset: auto; left: 50%; top: 50%; width: 13%; height: 13%; min-height: 0; padding: 0; translate: -50% -50%; border-radius: calc(var(--gleam-radius) * 100); }
 
     /* digits: two keys of the theme, the colon between them, the seconds as a bar of the main colour */
     .digits { display: grid; gap: 10px; justify-items: center; align-self: center; }
@@ -70,16 +70,16 @@
     .colon { font-size: 30px; font-weight: 700; color: var(--widget-text); text-shadow: var(--widget-text-shadow); transition: opacity .2s; }
     .colon.is-off { opacity: .25; }
     .seconds { width: 100%; height: 6px; border-radius: 99px; background: var(--widget-tile); overflow: hidden; }
-    .seconds i { display: block; height: 100%; width: 0; background: var(--bead-primary); border-radius: inherit; transition: width .3s linear; }
+    .seconds i { display: block; height: 100%; width: 0; background: var(--gleam-primary); border-radius: inherit; transition: width .3s linear; }
   ]]></style>
 
   <script><![CDATA[
-    if (bead.launch.widget === 'clock') widget(); else howTo();
+    if (gleam.launch.widget === 'clock') widget(); else howTo();
 
     /** The app's window: there is nothing to do in it but learn where the clock lives. */
     function howTo() {
       document.body.innerHTML = '<p class="how"><span style="font-size:44px">🕓</span><span></span></p>';
-      document.querySelector('.how span:last-child').textContent = bead.t('how');
+      document.querySelector('.how span:last-child').textContent = gleam.t('how');
     }
 
     /** The widget: hands or digits, whichever this clock was left on; a click switches and remembers. */
@@ -87,7 +87,7 @@
       const box = document.createElement('div');
       box.className = 'clock';
       document.body.append(box);
-      let face = (await bead.widget.config.get())?.face || 'hands';
+      let face = (await gleam.widget.config.get())?.face || 'hands';
 
       const hands = () => {
         const marks = [...Array(60)].map((_, i) => `<span class="mark${i % 5 ? '' : ' is-hour'}" style="rotate:${i * 6}deg"></span>`).join('');
@@ -110,23 +110,23 @@
           $('.m').style.rotate = `${m * 6 + s / 10}deg`;
           $('.s').style.rotate = `${s * 6}deg`;
         } else {
-          const [hh, mm] = now.toLocaleTimeString(bead.lang, { hour: '2-digit', minute: '2-digit', hour12: false }).split(/\D+/);
+          const [hh, mm] = now.toLocaleTimeString(gleam.lang, { hour: '2-digit', minute: '2-digit', hour12: false }).split(/\D+/);
           $('.hh').textContent = hh; $('.mm').textContent = mm;
           $('.colon').classList.toggle('is-off', s % 2 === 1);
           $('.seconds i').style.width = `${(s / 59) * 100}%`;
         }
-        $('.date').textContent = now.toLocaleDateString(bead.lang, { weekday: 'long', day: 'numeric', month: 'long' });
+        $('.date').textContent = now.toLocaleDateString(gleam.lang, { weekday: 'long', day: 'numeric', month: 'long' });
       }
-      const draw = () => { (face === 'hands' ? hands : digits)(); box.title = bead.t('change'); tick(); };
+      const draw = () => { (face === 'hands' ? hands : digits)(); box.title = gleam.t('change'); tick(); };
 
       box.addEventListener('click', (e) => {
         if (!e.target.closest('.btn')) return; // the dial or the keys: the clock itself
         face = face === 'hands' ? 'digits' : 'hands';
         draw();
-        bead.widget.config.set({ face }); // this clock only: another clock on the desktop keeps its own face
+        gleam.widget.config.set({ face }); // this clock only: another clock on the desktop keeps its own face
       });
       draw();
       setInterval(tick, 1000);
     }
   ]]></script>
-</bead-app>
+</gleam-app>

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  notes.bead — a small list of notes, and the smallest complete .bead app.
+  notes.gleam — a small list of notes, and the smallest complete .gleam app.
   It shows every part of the format: translations, icon, window, menu (with a shortcut and an item that
   opens a new window), style, body, script (data, texts, toasts, menu actions), an asset and a migration.
-  Read RAINBEAD-APPS.md for the whole story.
+  Read BLUEGLEAM-APPS.md for the whole story.
 -->
-<bead-app id="net.rainbead.hello" version="1.2.0" author="Rainbead">
+<gleam-app id="net.bluegleam.hello" version="1.2.0" author="Bluegleam">
 
   <translations>
     <lang code="en" default="true"><![CDATA[{
       "name": "Notes",
-      "description": "A tiny list of notes: the example of a .bead app.",
-      "info": "This app is an example of the .bead format.\nIts notes are kept, encrypted, in your account.",
+      "description": "A tiny list of notes: the example of a .gleam app.",
+      "info": "This app is an example of the .gleam format.\nIts notes are kept, encrypted, in your account.",
       "file": "File",
       "new": "New note",
       "newWindow": "New window",
@@ -24,8 +24,8 @@
     }]]></lang>
     <lang code="it"><![CDATA[{
       "name": "Note",
-      "description": "Un piccolo elenco di note: l'esempio di app .bead.",
-      "info": "Questa app è un esempio del formato .bead.\nLe sue note restano, cifrate, nel tuo account.",
+      "description": "Un piccolo elenco di note: l'esempio di app .gleam.",
+      "info": "Questa app è un esempio del formato .gleam.\nLe sue note restano, cifrate, nel tuo account.",
       "file": "File",
       "new": "Nuova nota",
       "newWindow": "Nuova finestra",
@@ -53,12 +53,12 @@
 
   <style><![CDATA[
     body { display: flex; flex-direction: column; }
-    .bar { padding: 10px; background: var(--bead-surface); border-bottom: 1px solid var(--bead-border); }
+    .bar { padding: 10px; background: var(--gleam-surface); border-bottom: 1px solid var(--gleam-border); }
     ul { flex: 1; overflow: auto; margin: 0; padding: 10px; list-style: none; display: grid; gap: 6px; align-content: start; }
-    li { display: flex; gap: 8px; align-items: center; padding: 8px 10px; background: var(--bead-surface); border: 1px solid var(--bead-border); border-radius: var(--bead-radius-small); }
+    li { display: flex; gap: 8px; align-items: center; padding: 8px 10px; background: var(--gleam-surface); border: 1px solid var(--gleam-border); border-radius: var(--gleam-radius-small); }
     li span { flex: 1; overflow-wrap: anywhere; }
     li img { width: 16px; height: 16px; }
-    footer { padding: 4px 10px; font-size: 12px; color: var(--bead-muted); }
+    footer { padding: 4px 10px; font-size: 12px; color: var(--gleam-muted); }
   ]]></style>
 
   <body><![CDATA[
@@ -74,24 +74,24 @@
 
     function draw() {
       list.innerHTML = '';
-      if (!data.notes.length) list.innerHTML = `<li class="muted">${bead.t('empty')}</li>`;
+      if (!data.notes.length) list.innerHTML = `<li class="muted">${gleam.t('empty')}</li>`;
       data.notes.forEach((note, i) => {
         const li = document.createElement('li');
         li.innerHTML = `<img alt=""><span></span><button class="icon-btn" title="✕">✕</button>`;
-        li.querySelector('img').src = bead.asset('pin.svg');
+        li.querySelector('img').src = gleam.asset('pin.svg');
         li.querySelector('span').textContent = note.text;
         li.querySelector('button').onclick = () => { data.notes.splice(i, 1); save(); };
         list.append(li);
       });
-      document.getElementById('count').textContent = bead.t('count', { n: data.notes.length });
+      document.getElementById('count').textContent = gleam.t('count', { n: data.notes.length });
     }
 
     async function save() {
       draw();
-      await bead.data.set(data, { force: true }); // the last window that saves wins: fine for notes
+      await gleam.data.set(data, { force: true }); // the last window that saves wins: fine for notes
     }
 
-    text.placeholder = bead.t('placeholder');
+    text.placeholder = gleam.t('placeholder');
     text.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && text.value.trim()) {
         data.notes.push({ text: text.value.trim(), at: Date.now() });
@@ -100,16 +100,16 @@
       }
     });
 
-    bead.on('menu', async (action) => {
+    gleam.on('menu', async (action) => {
       if (action === 'focus') text.focus();
-      if (action === 'clear' && await bead.ui.confirm(bead.t('sure'))) {
+      if (action === 'clear' && await gleam.ui.confirm(gleam.t('sure'))) {
         data.notes = [];
         save();
-        bead.ui.toast(bead.t('cleared'));
+        gleam.ui.toast(gleam.t('cleared'));
       }
     });
 
-    bead.data.get().then((saved) => {
+    gleam.data.get().then((saved) => {
       data = saved || data;
       draw();
       text.focus();
@@ -122,4 +122,4 @@
   <migrate from="1.0.0"><![CDATA[
     (data) => ({ notes: (data.notes || []).map((n) => (typeof n === 'string' ? { text: n, at: 0 } : n)) })
   ]]></migrate>
-</bead-app>
+</gleam-app>

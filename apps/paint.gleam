@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  paint.bead — draw, open pictures and save them in your files.
-  The example of the files of a .bead app: bead.files.open() and bead.files.saveAs() show Rainbead's own windows
-  (the app sees only what you choose there), bead.files.read() and bead.files.write() work on those files only,
-  <opens> offers the app in «Open with…» of Files, and bead.launch.file is the picture it was opened with.
-  The tool, colour and size are remembered with bead.data.
+  paint.gleam — draw, open pictures and save them in your files.
+  The example of the files of a .gleam app: gleam.files.open() and gleam.files.saveAs() show Bluegleam's own windows
+  (the app sees only what you choose there), gleam.files.read() and gleam.files.write() work on those files only,
+  <opens> offers the app in «Open with…» of Files, and gleam.launch.file is the picture it was opened with.
+  The tool, colour and size are remembered with gleam.data.
 -->
-<bead-app id="net.rainbead.paint" version="1.2.0" author="Rainbead">
+<gleam-app id="net.bluegleam.paint" version="1.2.0" author="Bluegleam">
 
   <translations>
     <lang code="en" default="true"><![CDATA[{
@@ -47,7 +47,7 @@
 
   <opens types=".png .jpg .jpeg .webp .gif .bmp image/png image/jpeg image/webp image/gif image/bmp"/>
 
-  <!-- ☰ in Rainbead's bar: the first menu is its first level, the others its second levels (Edit ›) -->
+  <!-- ☰ in Bluegleam's bar: the first menu is its first level, the others its second levels (Edit ›) -->
   <menu>
     <menu label="file">
       <item label="new" action="new" icon="new"/>
@@ -75,28 +75,28 @@
   <style><![CDATA[
     body { display: flex; flex-direction: column; overflow: hidden; user-select: none; -webkit-user-select: none; }
     .tools { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 6px 8px; scrollbar-width: none;
-      background: var(--bead-surface); border-bottom: 1px solid var(--bead-border); }
+      background: var(--gleam-surface); border-bottom: 1px solid var(--gleam-border); }
     .tools::-webkit-scrollbar { display: none; }
     .tools > * { flex: none; }
-    .tool { width: 34px; height: 34px; display: grid; place-items: center; padding: 0; color: var(--bead-text); background: none;
-      border: 1px solid transparent; border-radius: var(--bead-radius-small); cursor: pointer; }
-    .tool:hover { background: var(--bead-hover); }
-    .tool[aria-pressed="true"] { background: var(--bead-selected); border-color: var(--bead-accent); }
+    .tool { width: 34px; height: 34px; display: grid; place-items: center; padding: 0; color: var(--gleam-text); background: none;
+      border: 1px solid transparent; border-radius: var(--gleam-radius-small); cursor: pointer; }
+    .tool:hover { background: var(--gleam-hover); }
+    .tool[aria-pressed="true"] { background: var(--gleam-selected); border-color: var(--gleam-accent); }
     .tool svg { width: 20px; height: 20px; }
-    .sep { width: 1px; height: 24px; margin: 0 4px; background: var(--bead-border); }
+    .sep { width: 1px; height: 24px; margin: 0 4px; background: var(--gleam-border); }
     .swatches { display: flex; gap: 4px; }
-    .swatch { width: 24px; height: 24px; padding: 0; border: 2px solid var(--bead-surface); border-radius: 50%; box-shadow: 0 0 0 1px var(--bead-border); cursor: pointer; }
-    .swatch[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bead-accent); }
-    .custom { position: relative; width: 28px; height: 28px; border-radius: 50%; overflow: hidden; box-shadow: 0 0 0 1px var(--bead-border);
+    .swatch { width: 24px; height: 24px; padding: 0; border: 2px solid var(--gleam-surface); border-radius: 50%; box-shadow: 0 0 0 1px var(--gleam-border); cursor: pointer; }
+    .swatch[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--gleam-accent); }
+    .custom { position: relative; width: 28px; height: 28px; border-radius: 50%; overflow: hidden; box-shadow: 0 0 0 1px var(--gleam-border);
       background: conic-gradient(#f44336, #ffeb3b, #4caf50, #00bcd4, #3f51b5, #e91e63, #f44336); }
     .custom input { position: absolute; inset: -6px; width: 40px; height: 40px; opacity: 0; cursor: pointer; }
-    .size { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--bead-muted); }
+    .size { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--gleam-muted); }
     .size input { width: 90px; }
     .size output { min-width: 22px; text-align: right; font-variant-numeric: tabular-nums; }
     .stage { flex: 1; min-height: 0; display: grid; place-items: center; overflow: hidden; padding: 12px;
-      background: repeating-conic-gradient(var(--bead-sunken) 0 25%, var(--bead-bg) 0 50%) 0 0 / 20px 20px; }
+      background: repeating-conic-gradient(var(--gleam-sunken) 0 25%, var(--gleam-bg) 0 50%) 0 0 / 20px 20px; }
     canvas { max-width: 100%; max-height: 100%; background: transparent; box-shadow: 0 2px 12px rgba(0, 0, 0, .25); touch-action: none; cursor: crosshair; }
-    .status { display: flex; gap: 12px; padding: 3px 10px; font-size: 12px; color: var(--bead-muted); background: var(--bead-surface); border-top: 1px solid var(--bead-border); white-space: nowrap; overflow: hidden; }
+    .status { display: flex; gap: 12px; padding: 3px 10px; font-size: 12px; color: var(--gleam-muted); background: var(--gleam-surface); border-top: 1px solid var(--gleam-border); white-space: nowrap; overflow: hidden; }
     /* phones: one row of tools that scrolls sideways, the picture keeps the rest of the screen */
     @media (max-width: 560px) { .tools { flex-wrap: nowrap; overflow-x: auto; } .size input { width: 70px; } .stage { padding: 6px; } }
   ]]></style>
@@ -111,7 +111,7 @@
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     const tools = document.getElementById('tools');
-    const t = (k, v) => bead.t(k, v);
+    const t = (k, v) => gleam.t(k, v);
     const MAX = 2400;             // pictures bigger than this are made smaller
     const COLOURS = ['#000000', '#ffffff', '#9e9e9e', '#e53935', '#fb8c00', '#fdd835', '#43a047', '#00acc1', '#1e88e5', '#5e35b1', '#d81b60', '#6d4c41'];
     const ICONS = {
@@ -126,14 +126,14 @@
       filled: '<rect x="4" y="6" width="16" height="12" rx="1" fill="currentColor" opacity=".55" stroke="currentColor" stroke-width="2"/>',
     };
 
-    // what the app remembers (bead.data): the tool, the colour, the size, the shapes filled or not
+    // what the app remembers (gleam.data): the tool, the colour, the size, the shapes filled or not
     let prefs = { tool: 'brush', colour: '#1e88e5', size: 6, filled: false };
     let file = null;              // the picture opened or saved: { id, name, type, size, revision, editable }
     let dirty = false;
     const undo = [];
     const redo = [];
     let remembering = 0;
-    const remember = () => { clearTimeout(remembering); remembering = setTimeout(() => bead.data.set(prefs, { force: true }), 400); };
+    const remember = () => { clearTimeout(remembering); remembering = setTimeout(() => gleam.data.set(prefs, { force: true }), 400); };
 
     // ── the toolbar ────────────────────────────────────────────────────
     const button = (name, label, onClick) => {
@@ -186,7 +186,7 @@
     sizeInput.addEventListener('change', remember);
     tools.append(size);
 
-    // the bar and ☰ belong to Rainbead: the app tells them its title, unsaved changes and what can't be done now
+    // the bar and ☰ belong to Bluegleam: the app tells them its title, unsaved changes and what can't be done now
     const told = {};
     const tell = (key, value, send) => { if (told[key] !== value) { told[key] = value; send(); } };
 
@@ -199,12 +199,12 @@
       size.querySelector('output').textContent = prefs.size;
       const name = file ? file.name : t('untitled');
       document.getElementById('dims').textContent = `${canvas.width} × ${canvas.height}`;
-      tell('title', name, () => bead.ui.title(name));
-      tell('dirty', dirty, () => { bead.ui.dirty(dirty); bead.ui.state('save', { hidden: !dirty }); });
-      // closing the window with unsaved changes asks Paint's own question (an older Rainbead, without it, asks its own)
-      tell('leave', dirty ? name : '', () => bead.ui.confirmClose?.(dirty ? t('leave', { name }) : null)?.catch(() => {}));
-      tell('undo', !undo.length, () => bead.ui.state('undo', { disabled: !undo.length }));
-      tell('redo', !redo.length, () => bead.ui.state('redo', { disabled: !redo.length }));
+      tell('title', name, () => gleam.ui.title(name));
+      tell('dirty', dirty, () => { gleam.ui.dirty(dirty); gleam.ui.state('save', { hidden: !dirty }); });
+      // closing the window with unsaved changes asks Paint's own question (an older Bluegleam, without it, asks its own)
+      tell('leave', dirty ? name : '', () => gleam.ui.confirmClose?.(dirty ? t('leave', { name }) : null)?.catch(() => {}));
+      tell('undo', !undo.length, () => gleam.ui.state('undo', { disabled: !undo.length }));
+      tell('redo', !redo.length, () => gleam.ui.state('redo', { disabled: !redo.length }));
     }
 
     // ── the picture ────────────────────────────────────────────────────
@@ -333,10 +333,10 @@
       ctx.putImageData(img, 0, 0);
     }
 
-    // ── files: only what the user gives, through Rainbead's windows ─────
+    // ── files: only what the user gives, through Bluegleam's windows ─────
     async function load(given) {
       try {
-        const blob = await bead.files.read(given);
+        const blob = await gleam.files.read(given);
         const picture = await createImageBitmap(blob);
         let w = picture.width, h = picture.height;
         const k = Math.min(1, MAX / Math.max(w, h));
@@ -351,46 +351,46 @@
         undo.length = 0;
         redo.length = 0;
         show();
-        bead.ui.toast(k < 1 ? t('big', { w, h }) : t('opened', { name: given.name }));
+        gleam.ui.toast(k < 1 ? t('big', { w, h }) : t('opened', { name: given.name }));
       } catch (err) {
-        bead.ui.toast(err.code === 'denied' ? err.message : t('notPicture'));
+        gleam.ui.toast(err.code === 'denied' ? err.message : t('notPicture'));
       }
     }
     const asBlob = (type) => new Promise((ok) => canvas.toBlob(ok, type, 0.92));
     const keeps = (type) => ['image/png', 'image/jpeg', 'image/webp'].includes(type);
 
     async function open() {
-      if (dirty && !(await bead.ui.confirm(t('discard')))) return;
-      const chosen = await bead.files.open({ types: ['image/*'] });
+      if (dirty && !(await gleam.ui.confirm(t('discard')))) return;
+      const chosen = await gleam.files.open({ types: ['image/*'] });
       if (chosen) load(chosen);
     }
     async function saveAs() {
       const type = file && keeps(file.type) ? file.type : 'image/png';
       const name = file ? file.name.replace(/\.[^.]+$/, '') + (type === 'image/png' ? '.png' : type === 'image/jpeg' ? '.jpg' : '.webp') : t('drawingName');
-      const saved = await bead.files.saveAs(await asBlob(type), { name, types: ['image/*'] });
+      const saved = await gleam.files.saveAs(await asBlob(type), { name, types: ['image/*'] });
       if (!saved) return;
       file = saved;
       dirty = false;
       show();
-      bead.ui.toast(t('saved', { name: saved.name }));
+      gleam.ui.toast(t('saved', { name: saved.name }));
     }
     async function save() {
       if (!file || !keeps(file.type)) return saveAs();   // a new drawing, or a GIF/BMP Paint doesn't write
-      if (!file.editable) { bead.ui.toast(t('readOnly')); return saveAs(); }
+      if (!file.editable) { gleam.ui.toast(t('readOnly')); return saveAs(); }
       const blob = await asBlob(file.type);
       try {
-        file = await bead.files.write(file, blob);
+        file = await gleam.files.write(file, blob);
       } catch (err) {
-        if (err.code !== 'conflict' || !(await bead.ui.confirm(t('changed')))) { if (err.code !== 'conflict') bead.ui.toast(err.message); return; }
-        file = await bead.files.write(file, blob, { force: true });
+        if (err.code !== 'conflict' || !(await gleam.ui.confirm(t('changed')))) { if (err.code !== 'conflict') gleam.ui.toast(err.message); return; }
+        file = await gleam.files.write(file, blob, { force: true });
       }
       dirty = false;
       show();
-      bead.ui.toast(t('saved', { name: file.name }));
+      gleam.ui.toast(t('saved', { name: file.name }));
     }
 
-    bead.on('menu', async (action) => {
-      if (action === 'new') { if (!dirty || await bead.ui.confirm(t('discard'))) fresh(); }
+    gleam.on('menu', async (action) => {
+      if (action === 'new') { if (!dirty || await gleam.ui.confirm(t('discard'))) fresh(); }
       if (action === 'open') open();
       if (action === 'save') save();
       if (action === 'saveAs') saveAs();
@@ -400,8 +400,8 @@
     });
 
     // start: the remembered tools, then a blank page — or the picture the app was opened with (Files › Open with…)
-    bead.data.get().then((saved) => { prefs = { ...prefs, ...(saved || {}) }; show(); }).catch(() => {});
+    gleam.data.get().then((saved) => { prefs = { ...prefs, ...(saved || {}) }; show(); }).catch(() => {});
     fresh();
-    if (bead.launch.file) load(bead.launch.file);
+    if (gleam.launch.file) load(gleam.launch.file);
   })();]]></script>
-</bead-app>
+</gleam-app>
